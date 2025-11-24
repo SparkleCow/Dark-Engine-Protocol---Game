@@ -1,5 +1,25 @@
 services:
   redis:
-    image: 'redis:latest'
+    image: redis:latest
     ports:
-      - '6379'
+      - "6379:6379"
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - 'POSTGRES_DB=dep'
+      - 'POSTGRES_PASSWORD=Borman15'
+      - 'POSTGRES_USER=postgres'
+    volumes:
+      - dep:/var/lib/postgresql/data
+    networks:
+      - depnetwork
+
+volumes:
+  dep:
+
+networks:
+  depnetwork:
+    driver: bridge

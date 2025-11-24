@@ -1,3 +1,38 @@
 spring:
-  application:
-    name: dark-engine-protocol
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dep
+    username: postgres
+    password: Borman15
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 60000
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+
+logging:
+  level:
+    org.springframework.data.redis: DEBUG
+    org.hibernate.SQL: DEBUG
+
+
+application:
+  security:
+    jwt:
+      secret_key: ${SECRET_KEY}
+      expiration: 8640000
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:*}
