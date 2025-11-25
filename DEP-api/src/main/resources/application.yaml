@@ -23,6 +23,9 @@ spring:
         min-idle: 0
         max-wait: -1ms
 
+  cache:
+    type: redis
+
 logging:
   level:
     org.springframework.data.redis: DEBUG
