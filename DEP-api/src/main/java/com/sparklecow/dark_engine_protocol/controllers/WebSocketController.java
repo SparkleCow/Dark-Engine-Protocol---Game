@@ -3,6 +3,10 @@ package com.sparklecow.dark_engine_protocol.controllers;
 import com.sparklecow.dark_engine_protocol.entities.Position;
 import com.sparklecow.dark_engine_protocol.services.PositionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketController {
 
     private final PositionService positionService;
@@ -24,9 +29,12 @@ public class WebSocketController {
     @MessageMapping("/move")
     public void handleMovement(Position position, SimpMessageHeaderAccessor headerAccessor) {
 
+
         // 1. Obtener el Player ID Autenticado y Seguro (Reemplazar con tu lógica de autenticación)
         // **IMPORTANTE**: No confíes en el ID enviado por el cliente. Debe venir de la sesión.
         // Por ahora, usaremos el que viene en el objeto Position para pruebas:
+        log.info("Jugador {} se movió a X={} Y={}", position.getPlayerId(), position.getX(), position.getY());
+
         Long playerId = position.getPlayerId();
 
         if (playerId != null) {

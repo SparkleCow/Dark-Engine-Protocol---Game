@@ -19,7 +19,7 @@ public class PositionService {
     public void updatePosition(Position position) {
         redisTemplate.opsForHash().put(
                 KEY_POSITIONS,
-                position.getPlayerId(),
+                position.getPlayerId().toString(),
                 position
         );
     }

@@ -15,7 +15,11 @@ public class Position implements Serializable {
 
     private Long playerId;
 
-    private Long xPosition;
+    private double x;
 
-    private Long yPosition;
+    private double y;
+
+    private int mapId;
+
+    private double angle;
 }
