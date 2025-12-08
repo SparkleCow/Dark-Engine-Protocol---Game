@@ -1,0 +1,19 @@
+<div id="status">Status: {{ wsService.stompClient.connected ? 'Connected (ID: ' + PLAYER_ID + ')' : 'Connecting...' }}</div>
+
+<div id="game-area">
+    
+    <div 
+        [id]="SHIP_ELEMENT_ID" 
+        class="player-ship"
+        [style.transform]="'translate(' + playerState.x + 'px, ' + playerState.y + 'px) rotate(' + playerState.angle + 'deg)'"
+    ></div>
+
+    <ng-container *ngFor="let ship of otherShips | keyvalue">
+        <div
+            [id]="'player-' + ship.key"
+            class="other-ship"
+            [style.transform]="'translate(' + ship.value.x + 'px, ' + ship.value.y + 'px) rotate(' + ship.value.angle + 'deg)'"
+        ></div>
+    </ng-container>
+
+</div>

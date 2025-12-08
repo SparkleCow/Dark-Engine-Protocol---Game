@@ -1,0 +1,53 @@
+/* src/app/game-view/game-view.component.css */
+
+:host {
+    /* El componente debe ocupar toda la pantalla */
+    display: block; 
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden; 
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#status {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #00ff00;
+    z-index: 100; /* Asegura que esté encima */
+}
+
+/* El área de juego es el cuerpo del componente */
+#game-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Estilo para tu nave (el objeto que vas a mover) */
+.player-ship {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #00ff00; /* Verde neón */
+    border-radius: 50%;
+    transition: transform 0.1s linear; /* Movimiento más suave */
+    will-change: transform; /* Optimización de rendimiento */
+}
+
+/* Estilo para las naves de otros jugadores */
+.other-ship {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #ff0000; /* Rojo */
+    border-radius: 50%;
+    pointer-events: none; 
+    transition: transform 0.1s linear; /* Movimiento más suave */
+    will-change: transform;
+}

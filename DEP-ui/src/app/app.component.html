@@ -1,100 +1,104 @@
-<div class="landing-root">
-  <div class="starfield" role="img" aria-label="fondo espacial"></div>
+<ng-container *ngIf="showLanding">
+  <div class="landing-root">
+    <div class="starfield" role="img" aria-label="fondo espacial"></div>
 
-  <header class="topbar">
-    <div class="brand">Dark Engine Protocol</div>
-    <nav class="nav-actions">
-      <button class="btn ghost" (click)='toggleMode("login")'>Login</button>
-      <button class="btn neon" (click)='toggleMode("register")'>Registro</button>
-    </nav>
-  </header>
+    <header class="topbar">
+      <div class="brand">Dark Engine Protocol</div>
+      <nav class="nav-actions">
+        <button class="btn ghost" (click)='toggleMode("login")'>Login</button>
+        <button class="btn neon" (click)='toggleMode("register")'>Registro</button>
+      </nav>
+    </header>
 
-  <main class="hero">
-    <div class="hero-left">
-      <h1 class="title">Dark Engine Protocol</h1>
-      <p class="subtitle">Entra a la batalla por recursos estelares. Controla, conquista, sobrevive.</p>
+    <main class="hero">
+      <div class="hero-left">
+        <h1 class="title">Dark Engine Protocol</h1>
+        <p class="subtitle">Entra a la batalla por recursos estelares. Controla, conquista, sobrevive.</p>
 
-      <div class="cta-row">
-        <button class="cta-join">A LA BATALLA</button>
-        <div class="small-note">O regístrate / inicia sesión en el panel derecho</div>
-      </div>
-    </div>
-
-    <aside class="auth-panel">
-      <div class="panel-top">
-        <div class="panel-tabs">
-          <button class="tab" [class.active]="mode==='login'" (click)="toggleMode('login')">Login</button>
-          <button class="tab" [class.active]="mode==='register'" (click)="toggleMode('register')">Registro</button>
+        <div class="cta-row">
+          <button class="cta-join">A LA BATALLA</button>
+          <div class="small-note">O regístrate / inicia sesión en el panel derecho</div>
         </div>
       </div>
 
-      <div class="panel-body">
-        <form class="form" [formGroup]="fg" (ngSubmit)="onSubmit()">
+      <aside class="auth-panel">
+        <div class="panel-top">
+          <div class="panel-tabs">
+            <button class="tab" [class.active]="mode==='login'" (click)="toggleMode('login')">Login</button>
+            <button class="tab" [class.active]="mode==='register'" (click)="toggleMode('register')">Registro</button>
+          </div>
+        </div>
 
-          <ng-container *ngIf="mode === 'login'">
-            <label class="form-group">
-              <span>Nombre de usuario</span>
-              <input type="text" formControlName="username" />
-            </label>
-            <div *ngIf="fg.get('username')?.touched && fg.get('username')?.hasError('required')" class="validation-error">
-              El usuario es obligatorio.
-            </div>
+        <div class="panel-body">
+          <form class="form" [formGroup]="fg" (ngSubmit)="onSubmit()">
 
-            <label class="form-group">
-              <span>Contraseña</span>
-              <input type="password" formControlName="password" />
-            </label>
-             <div *ngIf="fg.get('password')?.touched && fg.get('password')?.hasError('required')" class="validation-error">
-              La contraseña es obligatoria.
-            </div>
-            
-            <div class="form-row">
-              <button class="btn neon wide" type="submit" [disabled]="fg.invalid">Entrar</button>
-            </div>
-            <div class="muted small">¿Olvidaste tu contraseña? <a class="link">Recuperar</a></div>
-          </ng-container>
+            <ng-container *ngIf="mode === 'login'">
+              <label class="form-group">
+                <span>Nombre de usuario</span>
+                <input type="text" formControlName="username" />
+              </label>
+              <div *ngIf="fg.get('username')?.touched && fg.get('username')?.hasError('required')" class="validation-error">
+                El usuario es obligatorio.
+              </div>
 
-          <ng-container *ngIf="mode === 'register'">
-            <label class="form-group">
-              <span>Usuario</span>
-              <input type="text" formControlName="username" />
-            </label>
-            <div *ngIf="fg.get('username')?.touched && fg.get('username')?.hasError('required')" class="validation-error">
-              El usuario es obligatorio.
-            </div>
+              <label class="form-group">
+                <span>Contraseña</span>
+                <input type="password" formControlName="password" />
+              </label>
+              <div *ngIf="fg.get('password')?.touched && fg.get('password')?.hasError('required')" class="validation-error">
+                La contraseña es obligatoria.
+              </div>
+              
+              <div class="form-row">
+                <button class="btn neon wide" type="submit" [disabled]="fg.invalid">Entrar</button>
+              </div>
+              <div class="muted small">¿Olvidaste tu contraseña? <a class="link">Recuperar</a></div>
+            </ng-container>
 
-            <label class="form-group">
-              <span>Email</span>
-              <input type="email" formControlName="email" />
-            </label>
-             <div *ngIf="fg.get('email')?.touched && (fg.get('email')?.hasError('required') || fg.get('email')?.hasError('email'))" class="validation-error">
-              Debe ser un email válido.
-            </div>
+            <ng-container *ngIf="mode === 'register'">
+              <label class="form-group">
+                <span>Usuario</span>
+                <input type="text" formControlName="username" />
+              </label>
+              <div *ngIf="fg.get('username')?.touched && fg.get('username')?.hasError('required')" class="validation-error">
+                El usuario es obligatorio.
+              </div>
 
-            <label class="form-group">
-              <span>Contraseña</span>
-              <input type="password" formControlName="password" />
-            </label>
-             <div *ngIf="fg.get('password')?.touched && fg.get('password')?.hasError('minlength')" class="validation-error">
-              La contraseña debe tener al menos 6 caracteres.
-            </div>
-            
-            <div class="form-row">
-              <button class="btn neon wide" type="submit" [disabled]="fg.invalid">Crear cuenta</button>
-            </div>
-            <div class="muted small">Al registrarte aceptas las condiciones del protocolo.</div>
-          </ng-container>
+              <label class="form-group">
+                <span>Email</span>
+                <input type="email" formControlName="email" />
+              </label>
+              <div *ngIf="fg.get('email')?.touched && (fg.get('email')?.hasError('required') || fg.get('email')?.hasError('email'))" class="validation-error">
+                Debe ser un email válido.
+              </div>
 
-        </form>
-      </div>
+              <label class="form-group">
+                <span>Contraseña</span>
+                <input type="password" formControlName="password" />
+              </label>
+              <div *ngIf="fg.get('password')?.touched && fg.get('password')?.hasError('minlength')" class="validation-error">
+                La contraseña debe tener al menos 6 caracteres.
+              </div>
+              
+              <div class="form-row">
+                <button class="btn neon wide" type="submit" [disabled]="fg.invalid">Crear cuenta</button>
+              </div>
+              <div class="muted small">Al registrarte aceptas las condiciones del protocolo.</div>
+            </ng-container>
 
-      <div class="panel-footer">
-        <small class="muted">Conexión segura · Servidores EN vivo</small>
-      </div>
-    </aside>
-  </main>
+          </form>
+        </div>
 
-  <footer class="footer">
-    <div class="credits">© Dark Engine Protocol — Universo experimental</div>
-  </footer>
-</div>
+        <div class="panel-footer">
+          <small class="muted">Conexión segura · Servidores EN vivo</small>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <div class="credits">© Dark Engine Protocol — Universo experimental</div>
+    </footer>
+  </div>
+</ng-container>
+
+<router-outlet *ngIf="!showLanding"></router-outlet>

@@ -1,31 +1,48 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { FormBuilder, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms'
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms'
 import { AuthService } from './core/services/auth.service';
 import { AuthRequestDto } from './models/auth-request-dto';
 import { AuthResponseDto } from './models/auth-response-dto';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterOutlet], 
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  
   mode: 'login'|'register' = 'login';
   fg: FormGroup; 
+  
+  showLanding: boolean = true; 
 
   constructor(
     private authService: AuthService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object 
   ){
     this.fg = formBuilder.group({});
     this.updateFormControls();
   }
 
-updateFormControls() {
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+        this.router.events.pipe(
+            filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+        ).subscribe((event: NavigationEnd) => {
+            this.showLanding = event.urlAfterRedirects === '/';
+        });
 
+        this.showLanding = this.router.url === '/';
+    }
+  }
+
+  updateFormControls() {
     Object.keys(this.fg.controls).forEach(key => this.fg.removeControl(key));
 
     if (this.mode === 'login') {
@@ -76,9 +93,11 @@ updateFormControls() {
           next: (authResponseDto: AuthResponseDto) => {
             this.authService.savePlayerId(authResponseDto.playerId.toString());
             this.authService.saveToken(authResponseDto.jwt);
-            console.log("Id saved")
+            this.redirectAtGame(); // Éxito: Navegar al juego
           },
-          error: () => {}
+          error: (err) => {
+            console.error("Login failed", err);
+          }
         });
 
       } else {
@@ -99,5 +118,9 @@ updateFormControls() {
     } else {
       console.log('Form is invalid!');
     }
+  }
+
+  redirectAtGame(){
+    this.router.navigate(["/dep"]);
   }
 }
