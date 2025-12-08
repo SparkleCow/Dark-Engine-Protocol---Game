@@ -28,10 +28,10 @@ spring:
   cache:
     type: redis
 
-logging:
-  level:
-    org.springframework.data.redis: DEBUG
-    org.hibernate.SQL: DEBUG
+#logging:
+  #level:
+    #org.springframework.data.redis: DEBUG
+    #org.hibernate.SQL: DEBUG
 
 application:
   security:

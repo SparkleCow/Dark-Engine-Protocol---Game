@@ -74,7 +74,9 @@ updateFormControls() {
 
         this.authService.$login(authRequestDto).subscribe({
           next: (authResponseDto: AuthResponseDto) => {
-            this.authService.savePlayerId(authResponseDto.playerId.toString())
+            this.authService.savePlayerId(authResponseDto.playerId.toString());
+            this.authService.saveToken(authResponseDto.jwt);
+            console.log("Id saved")
           },
           error: () => {}
         });

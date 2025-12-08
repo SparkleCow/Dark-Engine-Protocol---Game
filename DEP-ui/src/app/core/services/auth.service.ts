@@ -12,6 +12,8 @@ import { PlayerRequestDto } from '../../models/player-request-dto';
 export class AuthService {
 
   private readonly api = 'http://localhost:8080/api/auth';
+  private PLAYER_ID_KEY = 'player-id';
+  private JWT_KEY = 'jwt';
 
   constructor(private http: HttpClient) {}
 
@@ -23,19 +25,26 @@ export class AuthService {
     return this.http.post<void>(`${this.api}/register`, payload);
   }
 
-  savePlayerId(playerId: string){
-    localStorage.setItem("player-id", playerId);
+  savePlayerId(playerId: string): void {
+    localStorage.setItem(this.PLAYER_ID_KEY, playerId);
   }
 
-  getPlayerId(){
-    return localStorage.getItem("player-id");
+  getPlayerId(): string | null {
+    return localStorage.getItem(this.PLAYER_ID_KEY);
   }
 
-  saveToken(token: string){
-    localStorage.setItem("jwt", token)
+  saveToken(token: string): void {
+    localStorage.setItem(this.JWT_KEY, token);
   }
 
-  getToken(){
-    return localStorage.getItem("jwt")
+  getToken(): string | null {
+    return localStorage.getItem(this.JWT_KEY);
+  }
+
+  // Cleanup Method
+  
+  clearAuthData(): void {
+    localStorage.removeItem(this.PLAYER_ID_KEY);
+    localStorage.removeItem(this.JWT_KEY);
   }
 }
