@@ -39,11 +39,7 @@ public class Player implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "position_id")
-    private PositionEntity positionEntity;
-
-    // Redis is going to use Position. This will not stay in JPA
-    @Transient
-    private Position position;
+    private LastPosition lastPosition;
 
     // Spring Security
     @Override

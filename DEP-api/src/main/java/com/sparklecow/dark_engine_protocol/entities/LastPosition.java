@@ -6,16 +6,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Entity
-@Table(name = "positions")
+@Table(name = "last_position")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PositionEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class LastPosition {
 
-    private Level level;
+    @Id
+    private Long playerId;
+
+    private double x;
+    private double y;
+    private int mapId;
+    private double angle;
 }

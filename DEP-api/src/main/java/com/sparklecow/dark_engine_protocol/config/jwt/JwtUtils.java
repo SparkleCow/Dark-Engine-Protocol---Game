@@ -8,7 +8,10 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -24,6 +27,7 @@ import java.util.function.Function;
 public class JwtUtils {
 
     private final JwtProperties jwtProperties;
+    private final UserDetailsService userDetailsService;
 
     public String generateToken(org.springframework.security.core.userdetails.UserDetails userDetails) {
         return generateToken(userDetails, Map.of());
@@ -96,5 +100,31 @@ public class JwtUtils {
         }
 
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    /**
+     * Valida el JWT y construye un objeto Authentication de Spring Security.
+     * @param token El JWT a validar.
+     * @return El objeto Authentication si el token es válido y el usuario existe.
+     * @throws JwtException si el token es inválido o expirado.
+     */
+    public Authentication getAuthentication(String token) throws JwtException {
+        // 1. Extraer el nombre de usuario (Subject) del token
+        String username = extractUsername(token);
+
+        if (username == null || isExpired(token)) {
+            throw new JwtException("Token is null or expired.");
+        }
+
+        // 2. Cargar los detalles del usuario usando Spring Security
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        // 3. Crear y devolver el objeto Authentication
+        // No se requiere la contraseña ya que la autenticación ya está verificada por el JWT.
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
     }
 }

@@ -22,7 +22,7 @@ public class PlayerMapper {
                 player.getEmail(),
                 player.getStats(),
                 player.getInventory(),
-                player.getPositionEntity()
+                player.getLastPosition()
         );
     }
 
@@ -36,7 +36,7 @@ public class PlayerMapper {
                 // This fields will be created later in a service or in game
                 .stats(null)
                 .inventory(null)
-                .positionEntity(null)
+                .lastPosition(null)
                 .build();
     }
 }
