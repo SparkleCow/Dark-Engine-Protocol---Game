@@ -1,5 +1,6 @@
 package com.sparklecow.dark_engine_protocol.mappers;
 
+import com.sparklecow.dark_engine_protocol.entities.LastPosition;
 import com.sparklecow.dark_engine_protocol.entities.Player;
 import com.sparklecow.dark_engine_protocol.models.PlayerRequestDto;
 import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;

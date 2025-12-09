@@ -4,9 +4,12 @@ import { Subscription } from 'rxjs';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { PlayerService} from '../../core/services/player.service'; 
+import { PlayerResponseDto } from '../../models/player-response-dto';
 
 @Component({
   selector: 'app-game-view',
+  standalone: true, // Asumo que es un componente standalone
   imports: [CommonModule],
   templateUrl: './game-view.component.html',
   styleUrl: './game-view.component.css'
@@ -19,14 +22,16 @@ export class GameViewComponent implements OnInit, OnDestroy {
   
   // Identificadores de Cliente
   public PLAYER_ID: number;
-  public readonly SHIP_ELEMENT_ID: string;
+  public SHIP_ELEMENT_ID!: string;
+  public PLAYER_USERNAME!: string; // Almacena el nombre del jugador para la UI
 
   // Local player state
-  playerState: Position;
+  playerState!: Position; // Inicializado de forma asíncrona
 
-  
   // Estado de Otros Jugadores (ID -> Posición)
   otherShips: Map<number, Position> = new Map();
+
+  public isLoading: boolean = true;
   
   // Control de Bucle y Red
   private keysPressed: { [key: string]: boolean } = {};
@@ -34,45 +39,76 @@ export class GameViewComponent implements OnInit, OnDestroy {
   private syncSubscription!: Subscription;
   private animationFrameId!: number;
 
-  constructor(public wsService: WebsocketService, private authService: AuthService) {
-    // Inicialización de IDs y Estado
+  constructor(public wsService: WebsocketService, 
+              private authService: AuthService,
+              private playerService: PlayerService) {
+
+    // 1. Obtener ID del almacenamiento local/sesión
     this.PLAYER_ID = Number(this.authService.getPlayerId());
-    this.SHIP_ELEMENT_ID = 'player-' + this.PLAYER_ID;
-    
-    this.playerState = {
-      playerId: this.PLAYER_ID,
-      x: 500, 
-      y: 300, 
-      angle: 0,
-      mapId: 1
-    };
   }
 
   ngOnInit(): void {
-    // 1. Conectar y Suscribirse a la Sincronización
-    this.wsService.connect(this.PLAYER_ID);
-    this.syncSubscription = this.wsService.sync$.subscribe(positions => {
-      this.handleGlobalSync(positions);
-    });
+    // 2. Iniciar el proceso de carga asíncrono y todo el juego
+    this.loadInitialState();
+  }
 
-    // 2. Iniciar manejo de teclado
-    window.addEventListener('keydown', this.handleKeyDown.bind(this));
-    window.addEventListener('keyup', this.handleKeyUp.bind(this));
-    
-    // 3. Iniciar el Bucle de Juego
-    this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
+  loadInitialState(): void {
+    // 3. Llamada REST para obtener el estado inicial y los datos del jugador
+    this.playerService.$getPlayerInformation().subscribe({
+      next: (data: PlayerResponseDto) => {
+        this.PLAYER_USERNAME = data.username;
+        console.log(this.PLAYER_USERNAME)
+        const lastPos = data.lastPosition;
+        
+        // 4. ESTABLECER EL ESTADO LOCAL con la posición guardada
+        this.playerState = {
+          playerId: this.PLAYER_ID,
+          x: lastPos.x, 
+          y: lastPos.y, 
+          angle: lastPos.angle,
+          mapId: lastPos.mapId
+        };
+        this.SHIP_ELEMENT_ID = 'player-' + this.PLAYER_ID;
+        
+        // 5. INICIALIZAR WEB SOCKET Y BUCLE DE JUEGO
+        
+        // Conectar WebSocket
+        this.wsService.connect(this.PLAYER_ID);
+        this.syncSubscription = this.wsService.sync$.subscribe(positions => {
+          this.handleGlobalSync(positions);
+        });
+        
+        // Iniciar manejo de teclado
+        window.addEventListener('keydown', this.handleKeyDown.bind(this));
+        window.addEventListener('keyup', this.handleKeyUp.bind(this));
+        
+        // Iniciar el Bucle de Juego (Tick)
+        this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
+
+        // Marcar como cargado
+        this.isLoading = false; 
+        
+      },
+      error: () => {
+        console.error("Error loading initial player state");
+        // Aquí puedes manejar la redirección o un mensaje de error
+        this.isLoading = false; 
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    // 4. Limpieza
-    this.syncSubscription.unsubscribe();
+    // 4. Limpieza (siempre debe ejecutarse)
+    if (this.syncSubscription) {
+      this.syncSubscription.unsubscribe();
+    }
     this.wsService.disconnect();
     window.removeEventListener('keydown', this.handleKeyDown.bind(this));
     window.removeEventListener('keyup', this.handleKeyUp.bind(this));
     window.cancelAnimationFrame(this.animationFrameId);
   }
 
-  // --- Manejo de Entrada ---
+  // --- Manejo de Entrada (sin cambios) ---
 
   private handleKeyDown(e: KeyboardEvent) {
     this.keysPressed[e.code] = true;
@@ -85,6 +121,13 @@ export class GameViewComponent implements OnInit, OnDestroy {
   // --- Bucle de Juego (Tick) ---
 
   gameLoop(timestamp: number): void {
+    
+    // Verificación de seguridad: solo ejecutar si el estado está listo
+    if (this.isLoading || !this.playerState) {
+        this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
+        return;
+    }
+
     let moved = false;
     
     // 1. Actualización de posición local
@@ -115,7 +158,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
     this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
   }
 
-  // --- Manejo de Sincronización Global ---
+  // --- Manejo de Sincronización Global (sin cambios) ---
 
   handleGlobalSync(positions: Position[]): void {
     const activeIds = new Set(positions.map(p => p.playerId));

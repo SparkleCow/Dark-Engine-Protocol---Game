@@ -1,5 +1,7 @@
 package com.sparklecow.dark_engine_protocol.controllers;
 
+import com.sparklecow.dark_engine_protocol.entities.LastPosition;
+import com.sparklecow.dark_engine_protocol.entities.Player;
 import com.sparklecow.dark_engine_protocol.entities.Position;
 import com.sparklecow.dark_engine_protocol.services.PositionService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -47,6 +50,45 @@ public class WebSocketController {
             // Los clientes se suscriben a: /topic/updates/movement
             messagingTemplate.convertAndSend("/topic/updates/movement", position);
         }
+    }
+
+    @MessageMapping("/status/join")
+    public void handlePlayerJoin(@AuthenticationPrincipal Player player) {
+
+        Long playerId = player.getId();
+
+        // 1. Buscar la última posición guardada en PostgreSQL
+        LastPosition lastPosition = positionService.findLastPosition(playerId);
+
+        // 2. Crear/Cargar el objeto Position inicial
+        Position initialPosition;
+
+        if (lastPosition != null) {
+            // Cargar posición guardada
+            initialPosition = new Position(
+                    playerId,
+                    lastPosition.getX(),
+                    lastPosition.getY(),
+                    lastPosition.getMapId(),
+                    lastPosition.getAngle()
+            );
+        } else {
+            // Usar posición por defecto (primer inicio de sesión)
+            initialPosition = new Position(playerId, 0.0, 0.0, 1, 0.0);
+
+            // Opcional: Guardar esta posición inicial por defecto en PostgreSQL/Redis
+        }
+
+        // 3. Guardar en Redis para el estado en tiempo real
+        positionService.updatePosition(initialPosition);
+
+        // 4. Enviar la posición inicial de vuelta al cliente (topic privado)
+        // Ejemplo de topic privado: /queue/player/status
+        messagingTemplate.convertAndSendToUser(
+                player.getUsername(), // Asegúrate de que el username es el identificador en el front
+                "/queue/status",
+                initialPosition
+        );
     }
 
     // TODO: Crear métodos @MessageMapping para Disparos, Recolección, etc.

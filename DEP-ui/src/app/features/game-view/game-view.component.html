@@ -1,19 +1,27 @@
-<div id="status">Status: {{ wsService.stompClient.connected ? 'Connected (ID: ' + PLAYER_ID + ')' : 'Connecting...' }}</div>
-
-<div id="game-area">
-    
-    <div 
-        [id]="SHIP_ELEMENT_ID" 
-        class="player-ship"
-        [style.transform]="'translate(' + playerState.x + 'px, ' + playerState.y + 'px) rotate(' + playerState.angle + 'deg)'"
-    ></div>
-
-    <ng-container *ngFor="let ship of otherShips | keyvalue">
-        <div
-            [id]="'player-' + ship.key"
-            class="other-ship"
-            [style.transform]="'translate(' + ship.value.x + 'px, ' + ship.value.y + 'px) rotate(' + ship.value.angle + 'deg)'"
-        ></div>
-    </ng-container>
-
+<div id="status">
+    Status: {{ wsService.stompClient?.connected ? 'Connected (ID: ' + PLAYER_ID + ', User: ' + PLAYER_USERNAME + ')' : 'Connecting...' }}
 </div>
+
+<ng-container *ngIf="!isLoading; else loading">
+
+    <div id="game-area">
+        
+        <div 
+            [id]="SHIP_ELEMENT_ID" 
+            class="player-ship-container"
+            [style.transform]="'translate(' + playerState.x + 'px, ' + playerState.y + 'px) rotate(' + playerState.angle + 'deg)'"
+        >
+            <img src="Astro.png" alt="Nave del Jugador" class="ship-visual"/>
+            
+            <div class="username-tag">
+                {{ PLAYER_USERNAME }}
+            </div>
+            
+        </div>
+        </div>
+
+</ng-container>
+
+<ng-template #loading>
+    <div style="text-align: center; padding: 50px;">Cargando estado inicial del jugador y conectando...</div>
+</ng-template>

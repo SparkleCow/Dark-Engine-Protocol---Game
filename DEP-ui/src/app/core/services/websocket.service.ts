@@ -40,7 +40,6 @@ export class WebsocketService {
     this.stompClient = new Client({ // Usamos 'new Client' en lugar de Stomp.over()
         webSocketFactory: () => socket,
         debug: (str) => { 
-          console.log(str); 
         },
         
         connectHeaders: {

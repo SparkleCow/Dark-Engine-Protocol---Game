@@ -42,6 +42,11 @@ public class PositionService {
         return null;
     }
 
+    public LastPosition findLastPosition(Long playerId) {
+        return positionRepository.findById(playerId)
+                .orElse(null);
+    }
+
     public List<Position> getAllPositions() {
 
         return redisTemplate.opsForHash().values(KEY_POSITIONS)
