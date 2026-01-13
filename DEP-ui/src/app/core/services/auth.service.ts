@@ -5,7 +5,7 @@ import { AuthRequestDto } from '../../models/auth-request-dto';
 import { AuthResponseDto } from '../../models/auth-response-dto';
 import { PlayerRequestDto } from '../../models/player-request-dto';
 
-
+/*Auth service for login, register, save and retrieve jwt token and playerId from localStorage*/
 @Injectable({
   providedIn: 'root'
 })

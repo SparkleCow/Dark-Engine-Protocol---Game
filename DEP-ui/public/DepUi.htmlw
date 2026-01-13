@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<!-- saved from url=(0025)http://localhost:4200/dep -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script type="module" src="./DepUi_files/client"></script>
+
+  
+  <title>DepUi</title>
+  <!--<base href="/">--><base href=".">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="http://localhost:4200/favicon.ico">
+<link rel="stylesheet" href="./DepUi_files/styles.css"><style>
+
+[_ngcontent-ng-c1922312059]:root {
+  --bg1: #06070a;
+  --glass: rgba(8,12,18,0.55);
+  --glass-2: rgba(13,18,26,0.72);
+  --neon: #6ee7b7;
+  --neon-2: #8ac7ff;
+  --accent:
+    linear-gradient(
+      90deg,var(--neon),
+      var(--neon-2));
+  --muted: #98a3b3;
+  --panel-radius: 14px;
+  --soft-shadow: 0 4px 40px rgba(0,0,0,0.6);
+  --glass-border: rgba(255,255,255,0.04);
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
+}
+.landing-root[_ngcontent-ng-c1922312059] {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(
+      ellipse at 10% 20%,
+      rgba(20, 28, 40, 0.35) 0%,
+      transparent 20%),
+    linear-gradient(
+      180deg,
+      #020204 0%,
+      #041028 100%);
+  color: #e6eef6;
+  overflow: hidden;
+}
+.starfield[_ngcontent-ng-c1922312059] {
+  position: fixed;
+  inset: 0;
+  background-image: url("./media/dep-main.png");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.1) contrast(1.05) brightness(0.5);
+  z-index: 0;
+  opacity: 0.98;
+  transform: scale(1.02);
+  will-change: transform;
+}
+.topbar[_ngcontent-ng-c1922312059] {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 36px;
+  gap: 12px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.2));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: var(--soft-shadow);
+}
+.brand[_ngcontent-ng-c1922312059] {
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #dceffd;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  font-size: 18px;
+}
+.nav-actions[_ngcontent-ng-c1922312059] {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.btn[_ngcontent-ng-c1922312059] {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #e6eef6;
+  font-weight: 600;
+  transition: all .18s ease;
+}
+.btn[_ngcontent-ng-c1922312059]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.btn.ghost[_ngcontent-ng-c1922312059] {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.04);
+}
+.btn.neon[_ngcontent-ng-c1922312059] {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(110, 231, 183, 0.08),
+      rgba(138, 199, 255, 0.06));
+  border: 1px solid rgba(110, 231, 183, 0.13);
+  box-shadow: 0 6px 24px rgba(110, 231, 183, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  color: var(--neon);
+}
+.hero[_ngcontent-ng-c1922312059] {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 36px;
+  align-items: center;
+  padding: 40px 60px;
+  min-height: calc(100vh - 140px);
+}
+.hero-left[_ngcontent-ng-c1922312059] {
+  padding: 32px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.2),
+      rgba(4, 8, 16, 0.2));
+  border-radius: 12px;
+  box-shadow: var(--soft-shadow);
+  backdrop-filter: blur(6px) saturate(120%);
+  border: 1px solid var(--glass-border);
+}
+.title[_ngcontent-ng-c1922312059] {
+  font-size: 64px;
+  line-height: 0.9;
+  margin: 0 0 8px 0;
+  color: #f5fbff;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(110, 231, 183, 0.06);
+  letter-spacing: -1px;
+}
+.subtitle[_ngcontent-ng-c1922312059] {
+  color: var(--muted);
+  margin: 6px 0 22px 0;
+  font-size: 16px;
+  max-width: 68%;
+}
+.cta-row[_ngcontent-ng-c1922312059] {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.cta-join[_ngcontent-ng-c1922312059] {
+  font-weight: 900;
+  font-size: 20px;
+  padding: 18px 40px;
+  border-radius: 14px;
+  color: #061213;
+  background:
+    linear-gradient(
+      180deg,
+      #93ffca,
+      #38e0a4);
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 40px rgba(48, 195, 140, 0.12), inset 0 -3px 18px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transform: translateY(0);
+}
+.cta-join[_ngcontent-ng-c1922312059]:hover {
+  transform: translateY(-3px);
+}
+.auth-panel[_ngcontent-ng-c1922312059] {
+  width: 100%;
+  max-width: 380px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 14, 20, 0.72),
+      rgba(6, 8, 12, 0.6));
+  border-radius: var(--panel-radius);
+  padding: 14px;
+  box-shadow: 0 10px 50px rgba(3, 6, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+.panel-top[_ngcontent-ng-c1922312059] {
+  display: flex;
+  justify-content: center;
+  padding: 8px 6px 6px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+.panel-tabs[_ngcontent-ng-c1922312059] {
+  display: flex;
+  gap: 8px;
+}
+.tab[_ngcontent-ng-c1922312059] {
+  background: transparent;
+  border: none;
+  padding: 10px 18px;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.tab.active[_ngcontent-ng-c1922312059] {
+  color: var(--neon);
+  box-shadow: 0 6px 26px rgba(110, 231, 183, 0.06);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(110, 231, 183, 0.03),
+      rgba(138, 199, 255, 0.02));
+}
+.panel-body[_ngcontent-ng-c1922312059] {
+  padding: 18px;
+}
+.form[_ngcontent-ng-c1922312059] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.form-group[_ngcontent-ng-c1922312059] {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #dfeaf4;
+}
+.form-group[_ngcontent-ng-c1922312059]   input[_ngcontent-ng-c1922312059] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  color: #eaf6ff;
+  outline: none;
+  transition: box-shadow .12s ease, transform .08s ease;
+}
+.form-group[_ngcontent-ng-c1922312059]   input[_ngcontent-ng-c1922312059]:focus {
+  box-shadow: 0 8px 28px rgba(110, 231, 183, 0.06);
+  transform: translateY(-2px);
+  border-color: rgba(110, 231, 183, 0.18);
+}
+.form-row[_ngcontent-ng-c1922312059] {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+.small-note[_ngcontent-ng-c1922312059] {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+.panel-footer[_ngcontent-ng-c1922312059] {
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  padding: 10px 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+.footer[_ngcontent-ng-c1922312059] {
+  position: relative;
+  z-index: 5;
+  padding: 12px 36px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 980px) {
+  .hero[_ngcontent-ng-c1922312059] {
+    grid-template-columns: 1fr;
+    padding: 24px;
+    min-height: auto;
+    gap: 20px;
+  }
+  .title[_ngcontent-ng-c1922312059] {
+    font-size: 44px;
+  }
+  .hero-left[_ngcontent-ng-c1922312059]   .subtitle[_ngcontent-ng-c1922312059] {
+    max-width: 100%;
+  }
+  .auth-panel[_ngcontent-ng-c1922312059] {
+    max-width: 100%;
+  }
+}
+.link[_ngcontent-ng-c1922312059] {
+  color: var(--neon-2);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.muted[_ngcontent-ng-c1922312059] {
+  color: var(--muted);
+}
+@keyframes _ngcontent-ng-c1922312059_glowPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(110, 231, 183, 0);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(110, 231, 183, 0.03);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(110, 231, 183, 0);
+  }
+}
+.cta-join[_ngcontent-ng-c1922312059] {
+  animation: _ngcontent-ng-c1922312059_glowPulse 4s ease-in-out infinite;
+}
+/*# sourceMappingURL=/app.component.css.map */</style><style>
+
+[_nghost-ng-c758475895] {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  color: #fff;
+  overflow: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+#status[_ngcontent-ng-c758475895] {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #00ff00;
+  z-index: 100;
+}
+#game-area[_ngcontent-ng-c758475895] {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.player-ship-container[_ngcontent-ng-c758475895] {
+  position: absolute;
+  transition: transform 0.1s linear;
+  will-change: transform;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+}
+.other-ship-container[_ngcontent-ng-c758475895] {
+  position: absolute;
+  transition: transform 0.1s linear;
+  will-change: transform;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  pointer-events: none;
+}
+.player-ship-container[_ngcontent-ng-c758475895]   .ship-visual[_ngcontent-ng-c758475895] {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+}
+.player-ship-container[_ngcontent-ng-c758475895]   .ship-visual[_ngcontent-ng-c758475895]   img[_ngcontent-ng-c758475895] {
+  width: 100%;
+  height: 100%;
+  display: block;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.other-ship-container[_ngcontent-ng-c758475895]   .ship-visual-other[_ngcontent-ng-c758475895] {
+  width: 30px;
+  height: 30px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  position: absolute;
+}
+.username-tag[_ngcontent-ng-c758475895] {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 0 0 3px #000;
+  padding: 2px 5px;
+  border-radius: 3px;
+  z-index: 10;
+}
+/*# sourceMappingURL=/game-view.component.css.map */</style></head>
+<body>
+  <app-root ng-version="19.2.15" _nghost-ng-c1922312059=""><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><router-outlet _ngcontent-ng-c1922312059=""></router-outlet><app-game-view _nghost-ng-c758475895=""><div _ngcontent-ng-c758475895="" id="status"> Status: Connected (ID: 1, User: SparkleCow)
+</div><div _ngcontent-ng-c758475895="" id="game-area"><div _ngcontent-ng-c758475895="" class="player-ship-container local-ship" id="player-1" style="transform: translate(470px, 2340px) rotate(0deg);"><img _ngcontent-ng-c758475895="" src="./DepUi_files/Astro.png" alt="Nave del Jugador" class="ship-visual"><div _ngcontent-ng-c758475895="" class="username-tag"> SparkleCow </div></div><div _ngcontent-ng-c758475895="" class="player-ship-container remote-ship" id="player-2" style="transform: translate(845px, 420px) rotate(0deg);"><img _ngcontent-ng-c758475895="" src="./DepUi_files/Astro.png" alt="Nave Remota" class="ship-visual"><div _ngcontent-ng-c758475895="" class="username-tag"> Cielo </div></div><!--ng-container--><!--bindings={
+  "ng-reflect-ng-for-of": "[object Object]"
+}--></div><!--ng-container--><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--><!--container--></app-game-view><!--container--><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--></app-root>
+<script src="./DepUi_files/polyfills.js" type="module"></script><script src="./DepUi_files/scripts.js" defer=""></script><script src="./DepUi_files/main.js" type="module"></script>
+
+</body></html>

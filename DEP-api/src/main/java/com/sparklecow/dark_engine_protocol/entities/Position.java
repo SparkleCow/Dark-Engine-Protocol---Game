@@ -23,4 +23,6 @@ public class Position implements Serializable {
     private int mapId;
 
     private double angle;
+
+    private String username;
 }

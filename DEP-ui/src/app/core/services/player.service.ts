@@ -12,7 +12,7 @@ export class PlayerService {
   private readonly apiUrl = 'http://localhost:8080/api/player'; 
   constructor(private http: HttpClient) { }
 
-
+  /*Only is needed send the jwt since our interceptor to be able to access at player information since the API recieve an authentication object.*/
   $getPlayerInformation(): Observable<PlayerResponseDto> {
     return this.http.get<PlayerResponseDto>(this.apiUrl);
   }

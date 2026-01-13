@@ -5,20 +5,34 @@
 <ng-container *ngIf="!isLoading; else loading">
 
     <div id="game-area">
-        
-        <div 
-            [id]="SHIP_ELEMENT_ID" 
-            class="player-ship-container"
+
+        <div
+            [id]="SHIP_ELEMENT_ID"
+            class="player-ship-container local-ship"
             [style.transform]="'translate(' + playerState.x + 'px, ' + playerState.y + 'px) rotate(' + playerState.angle + 'deg)'"
         >
             <img src="Astro.png" alt="Nave del Jugador" class="ship-visual"/>
-            
+
             <div class="username-tag">
                 {{ PLAYER_USERNAME }}
             </div>
-            
+
         </div>
-        </div>
+
+        <ng-container *ngFor="let ship of otherShips | keyvalue">
+            <div
+                [id]="'player-' + ship.key"
+                class="player-ship-container remote-ship"
+                [style.transform]="'translate(' + ship.value.x + 'px, ' + ship.value.y + 'px) rotate(' + ship.value.angle + 'deg)'"
+            >
+                <img src="Astro.png" alt="Nave Remota" class="ship-visual"/>
+                <div class="username-tag">
+                    {{ ship.value.username }}
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
 
 </ng-container>
 

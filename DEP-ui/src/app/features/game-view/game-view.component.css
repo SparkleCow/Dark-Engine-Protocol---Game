@@ -2,12 +2,12 @@
 
 :host {
     /* El componente debe ocupar toda la pantalla */
-    display: block; 
+    display: block;
     width: 100vw;
     height: 100vh;
     background-color: #000;
     color: #fff;
-    overflow: hidden; 
+    overflow: hidden;
     margin: 0;
     font-family: Arial, sans-serif;
 }
@@ -27,6 +27,14 @@
     width: 100%;
     height: 100%;
     position: relative;
+
+    /* 💥 MODIFICACIÓN PARA EL FONDO 💥 */
+    background-image: url('/map1.jpeg'); /* 💥 RUTA PROBLEMA 💥 */
+
+    background-size: cover;          /* Cubre todo el contenedor */
+    background-position: center;     /* Centra la imagen */
+    background-repeat: no-repeat;    /* Evita que se repita */
+    /* ---------------------------------- */
 }
 
 /* ------------------------------------------------------------- */
@@ -36,13 +44,13 @@
 /* Contenedor que maneja la posición y rotación de TU nave */
 .player-ship-container {
     position: absolute;
-    transition: transform 0.1s linear; 
+    transition: transform 0.1s linear;
     will-change: transform;
     /* ⚠️ IMPORTANTE: Ajuste para centrar el origen (30px/2) en la coordenada (x, y) */
     width: 30px;
-    height: 30px; 
-    margin-left: -15px; 
-    margin-top: -15px; 
+    height: 30px;
+    margin-left: -15px;
+    margin-top: -15px;
 }
 
 /* Contenedor que maneja la posición y rotación de OTRAS naves */
@@ -51,9 +59,9 @@
     transition: transform 0.1s linear;
     will-change: transform;
     width: 30px;
-    height: 30px; 
-    margin-left: -15px; 
-    margin-top: -15px;  
+    height: 30px;
+    margin-left: -15px;
+    margin-top: -15px;
     pointer-events: none; /* Ignora clics */
 }
 
@@ -74,11 +82,11 @@
     height: 100%;
     display: block;
     /* Opcional: Evita que la imagen sea arrastrada */
-    user-select: none; 
+    user-select: none;
 }
 
 /* Elemento visual de las naves de otros jugadores (manteniendo el círculo rojo original) */
-.other-ship-container .ship-visual-other { 
+.other-ship-container .ship-visual-other {
     width: 30px;
     height: 30px;
     background-color: #ff0000; /* Rojo */
@@ -96,14 +104,14 @@
     position: absolute;
     top: 35px; /* 5px debajo de la nave de 30px de alto */
     left: 50%;
-    
+
     transform: translateX(-50%); /* Centra el texto horizontalmente */
-    
-    white-space: nowrap; 
+
+    white-space: nowrap;
     color: #fff;
     font-size: 11px;
     font-weight: bold;
-    text-shadow: 0 0 3px #000; 
+    text-shadow: 0 0 3px #000;
     padding: 2px 5px;
     border-radius: 3px;
     z-index: 10;
