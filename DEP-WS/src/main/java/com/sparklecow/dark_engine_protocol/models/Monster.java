@@ -46,9 +46,6 @@ public class Monster {
         this.reward = type.getReward();
     }
 
-    // -----------------------
-    // Lógica de movimiento
-    // -----------------------
     public void update(long now) {
         if (!alive) return;
 
@@ -61,6 +58,19 @@ public class Monster {
         // Movimiento
         this.x += dirX * speed;
         this.y += dirY * speed;
+        // Setear esto despues en una clase que represente el primer mapa.
+        clampPlayer(5000, 5000);
+    }
+
+    public void clampPlayer(double WORLD_WIDTH, double WORLD_HEIGHT){
+        this.x = Math.max(
+                0,
+                Math.min(WORLD_WIDTH, this.x)
+        );
+        this.y = Math.max(
+                0,
+                Math.min(WORLD_HEIGHT, this.y)
+        );
     }
 
     private void randomizeDirection() {

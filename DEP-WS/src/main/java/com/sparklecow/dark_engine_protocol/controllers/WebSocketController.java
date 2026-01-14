@@ -9,6 +9,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.Objects;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -26,13 +28,13 @@ public class WebSocketController {
     @MessageMapping("/move")
     public void handleMovement(Position position, SimpMessageHeaderAccessor headerAccessor) {
 
-
         // 1. Obtener el Player ID Autenticado y Seguro
-        // **IMPORTANTE**: No confíes en el ID enviado por el cliente. Debe venir de la sesión.
-        // Por ahora, usaremos el que viene en el objeto Position para pruebas:
-        log.info("Jugador {} se movió a X={} Y={}", position.getPlayerId(), position.getX(), position.getY());
+        Long playerId = Long.valueOf(
+                headerAccessor.getSessionAttributes()
+                        .get("PlayerId")
+                        .toString());
 
-        Long playerId = position.getPlayerId();
+        log.info("Jugador {} se movió a X={} Y={}", playerId, position.getX(), position.getY());
 
         if (playerId != null) {
 

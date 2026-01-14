@@ -60,13 +60,9 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
                         log.info("STOMP Session {} successfully authenticated for Player ID: {}",
                                 accessor.getSessionId(), playerId);
                     } else {
-                        // Esto no debería pasar, pero es una buena práctica atraparlo.
                         throw new IllegalStateException("Principal is not a Player entity.");
                     }
-
-
                 } catch (Exception e) {
-                    // Rechazar la conexión si el token es inválido/expirado
                     throw new RuntimeException("Invalid JWT token or authentication failure.", e);
                 }
             }
