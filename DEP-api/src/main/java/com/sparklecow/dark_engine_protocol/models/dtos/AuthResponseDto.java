@@ -1,4 +1,4 @@
-package com.sparklecow.dark_engine_protocol.models;
+package com.sparklecow.dark_engine_protocol.models.dtos;
 
 public record AuthResponseDto(
         String jwt,

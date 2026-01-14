@@ -1,9 +1,6 @@
 package com.sparklecow.dark_engine_protocol.listeners;
 
-import com.sparklecow.dark_engine_protocol.entities.LastPosition;
-import com.sparklecow.dark_engine_protocol.entities.Player;
 import com.sparklecow.dark_engine_protocol.entities.Position;
-import com.sparklecow.dark_engine_protocol.repositories.PlayerRepository;
 import com.sparklecow.dark_engine_protocol.services.PositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

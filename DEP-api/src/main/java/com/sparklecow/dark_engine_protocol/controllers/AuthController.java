@@ -1,8 +1,8 @@
 package com.sparklecow.dark_engine_protocol.controllers;
 
-import com.sparklecow.dark_engine_protocol.models.AuthRequestDto;
-import com.sparklecow.dark_engine_protocol.models.AuthResponseDto;
-import com.sparklecow.dark_engine_protocol.models.PlayerRequestDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.AuthRequestDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.AuthResponseDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.PlayerRequestDto;
 import com.sparklecow.dark_engine_protocol.mappers.PlayerMapper;
 import com.sparklecow.dark_engine_protocol.services.AuthService;
 import jakarta.validation.Valid;

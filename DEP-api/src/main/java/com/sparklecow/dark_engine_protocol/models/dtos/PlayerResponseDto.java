@@ -1,4 +1,4 @@
-package com.sparklecow.dark_engine_protocol.models;
+package com.sparklecow.dark_engine_protocol.models.dtos;
 
 import com.sparklecow.dark_engine_protocol.entities.Inventory;
 import com.sparklecow.dark_engine_protocol.entities.LastPosition;

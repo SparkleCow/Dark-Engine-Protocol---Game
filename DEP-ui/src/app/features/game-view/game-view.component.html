@@ -1,41 +1,62 @@
-<div id="status">
-    Status: {{ wsService.stompClient?.connected ? 'Connected (ID: ' + PLAYER_ID + ', User: ' + PLAYER_USERNAME + ')' : 'Connecting...' }}
-</div>
-
-<ng-container *ngIf="!isLoading; else loading">
-
-    <div id="game-area">
-
-        <div
-            [id]="SHIP_ELEMENT_ID"
-            class="player-ship-container local-ship"
-            [style.transform]="'translate(' + playerState.x + 'px, ' + playerState.y + 'px) rotate(' + playerState.angle + 'deg)'"
-        >
-            <img src="Astro.png" alt="Nave del Jugador" class="ship-visual"/>
-
-            <div class="username-tag">
-                {{ PLAYER_USERNAME }}
-            </div>
-
-        </div>
-
-        <ng-container *ngFor="let ship of otherShips | keyvalue">
-            <div
-                [id]="'player-' + ship.key"
-                class="player-ship-container remote-ship"
-                [style.transform]="'translate(' + ship.value.x + 'px, ' + ship.value.y + 'px) rotate(' + ship.value.angle + 'deg)'"
-            >
-                <img src="Astro.png" alt="Nave Remota" class="ship-visual"/>
-                <div class="username-tag">
-                    {{ ship.value.username }}
-                </div>
-            </div>
-        </ng-container>
-
+<div id="viewport" *ngIf="!isLoading">
+  <div
+    id="world"
+    [style.transform]="'translate(' + cameraX + 'px,' + cameraY + 'px)'"
+  >
+    <!-- =========================
+         JUGADOR LOCAL
+    ========================== -->
+    <div
+      class="ship"
+      [style.transform]="
+        'translate(' +
+        playerState.x +
+        'px,' +
+        playerState.y +
+        'px) rotate(' +
+        playerState.angle +
+        'deg)'
+      "
+    >
+      <img src="Astro.png" />
+      <div class="username-tag">{{ PLAYER_USERNAME }}</div>
     </div>
 
-</ng-container>
+    <!-- =========================
+         OTROS JUGADORES
+    ========================== -->
+    <ng-container *ngFor="let ship of otherShips | keyvalue">
+      <div
+        class="ship"
+        [style.transform]="
+          'translate(' +
+          ship.value.x +
+          'px,' +
+          ship.value.y +
+          'px) rotate(' +
+          ship.value.angle +
+          'deg)'
+        "
+      >
+        <img src="Astro.png" />
+        <div class="username-tag">{{ ship.value.username }}</div>
+      </div>
+    </ng-container>
 
-<ng-template #loading>
-    <div style="text-align: center; padding: 50px;">Cargando estado inicial del jugador y conectando...</div>
-</ng-template>
+    <!-- =========================
+         MONSTRUOS
+    ========================== -->
+    <ng-container *ngFor="let monster of monsters | keyvalue">
+      <div
+        class="monster"
+        [style.transform]="
+          'translate(' + monster.value.x + 'px,' + monster.value.y + 'px)'
+        "
+      >
+        <div class="monster-name">{{ monster.value.id }}</div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading">Cargando mundo...</div>

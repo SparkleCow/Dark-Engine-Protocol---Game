@@ -1,183 +1,173 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Position } from '../../models/position';
-import { Subscription } from 'rxjs';
-import { WebsocketService } from '../../core/services/websocket.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+
+import { Position } from '../../models/position';
+import { MonsterSnapshot } from '../../models/monster-snapshot';
+import { WorldSnapshot } from '../../models/world-snapshot';
+
+import { WebsocketService } from '../../core/services/websocket.service';
 import { AuthService } from '../../core/services/auth.service';
-import { PlayerService} from '../../core/services/player.service';
+import { PlayerService } from '../../core/services/player.service';
 import { PlayerResponseDto } from '../../models/player-response-dto';
 
 @Component({
   selector: 'app-game-view',
-  standalone: true, // Asumo que es un componente standalone
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './game-view.component.html',
-  styleUrl: './game-view.component.css'
+  styleUrl: './game-view.component.css',
 })
 export class GameViewComponent implements OnInit, OnDestroy {
+  WORLD_WIDTH = 5000;
+  WORLD_HEIGHT = 5000;
 
-  // Constantes del juego
-  private readonly SPEED = 5; // Pixeles por tick
-  private readonly SEND_INTERVAL = 50; // Enviar la posición al servidor cada 50ms
+  VIEWPORT_WIDTH = window.innerWidth;
+  VIEWPORT_HEIGHT = window.innerHeight;
 
-  // Identificadores de Cliente
-  public PLAYER_ID: number;
-  public SHIP_ELEMENT_ID!: string;
-  public PLAYER_USERNAME!: string; // Almacena el nombre del jugador para la UI
+  private readonly SPEED = 5;
+  private readonly SEND_INTERVAL = 50;
 
-  // Local player state
-  playerState!: Position; // Inicializado de forma asíncrona
+  PLAYER_ID!: number;
+  PLAYER_USERNAME!: string;
 
-  // Estado de Otros Jugadores (ID -> Posición)
+  playerState!: Position;
+
   otherShips: Map<number, Position> = new Map();
+  monsters: Map<string, MonsterSnapshot> = new Map();
 
-  public isLoading: boolean = true;
+  cameraX = 0;
+  cameraY = 0;
 
-  // Control de Bucle y Red
-  private keysPressed: { [key: string]: boolean } = {};
+  isLoading = true;
+
+  private keysPressed: Record<string, boolean> = {};
   private lastSendTime = 0;
-  private syncSubscription!: Subscription;
   private animationFrameId!: number;
+  private worldSubscription!: Subscription;
 
-  constructor(public wsService: WebsocketService,
-              private authService: AuthService,
-              private playerService: PlayerService) {
-
-    // 1. Obtener ID del almacenamiento local/sesión
+  constructor(
+    public wsService: WebsocketService,
+    private authService: AuthService,
+    private playerService: PlayerService
+  ) {
     this.PLAYER_ID = Number(this.authService.getPlayerId());
   }
 
   ngOnInit(): void {
-    // 2. Iniciar el proceso de carga asíncrono y todo el juego
     this.loadInitialState();
-  }
-
-  loadInitialState(): void {
-    // 3. Llamada REST para obtener el estado inicial y los datos del jugador
-    this.playerService.$getPlayerInformation().subscribe({
-      next: (data: PlayerResponseDto) => {
-        this.PLAYER_USERNAME = data.username;
-        const lastPos = data.lastPosition;
-
-        // 4. ESTABLECER EL ESTADO LOCAL con la posición guardada
-        this.playerState = {
-          playerId: this.PLAYER_ID,
-          x: lastPos.x,
-          y: lastPos.y,
-          angle: lastPos.angle,
-          mapId: lastPos.mapId,
-          username: data.username
-        };
-        this.SHIP_ELEMENT_ID = 'player-' + this.PLAYER_ID;
-
-        // 5. INICIALIZAR WEB SOCKET Y BUCLE DE JUEGO
-
-        // Conectar WebSocket
-        this.wsService.connect(this.PLAYER_ID);
-        this.syncSubscription = this.wsService.sync$.subscribe(positions => {
-          this.handleGlobalSync(positions);
-        });
-
-        // Iniciar manejo de teclado
-        window.addEventListener('keydown', this.handleKeyDown.bind(this));
-        window.addEventListener('keyup', this.handleKeyUp.bind(this));
-
-        // Iniciar el Bucle de Juego (Tick)
-        this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
-
-        // Marcar como cargado
-        this.isLoading = false;
-
-      },
-      error: () => {
-        console.error("Error loading initial player state");
-        // Aquí puedes manejar la redirección o un mensaje de error
-        this.isLoading = false;
-      }
-    });
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
   }
 
   ngOnDestroy(): void {
-    // 4. Limpieza (siempre debe ejecutarse)
-    if (this.syncSubscription) {
-      this.syncSubscription.unsubscribe();
-    }
     this.wsService.disconnect();
-    window.removeEventListener('keydown', this.handleKeyDown.bind(this));
-    window.removeEventListener('keyup', this.handleKeyUp.bind(this));
-    window.cancelAnimationFrame(this.animationFrameId);
+    this.worldSubscription?.unsubscribe();
+    cancelAnimationFrame(this.animationFrameId);
+
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
   }
 
-  // --- Manejo de Entrada (sin cambios) ---
+  loadInitialState(): void {
+    this.playerService.$getPlayerInformation().subscribe({
+      next: (data: PlayerResponseDto) => {
+        this.PLAYER_USERNAME = data.username;
 
-  private handleKeyDown(e: KeyboardEvent) {
-    this.keysPressed[e.code] = true;
+        this.playerState = {
+          playerId: this.PLAYER_ID,
+          x: data.lastPosition.x,
+          y: data.lastPosition.y,
+          angle: data.lastPosition.angle,
+          mapId: data.lastPosition.mapId,
+          username: data.username,
+        };
+
+        this.wsService.connect(this.PLAYER_ID);
+        this.worldSubscription = this.wsService.world$.subscribe((w) =>
+          this.handleWorldSnapshot(w)
+        );
+
+        this.animationFrameId = requestAnimationFrame(this.gameLoop);
+        this.isLoading = false;
+      },
+    });
   }
 
-  private handleKeyUp(e: KeyboardEvent) {
-    this.keysPressed[e.code] = false;
-  }
-
-  // --- Bucle de Juego (Tick) ---
-
-  gameLoop(timestamp: number): void {
-
-    // Verificación de seguridad: solo ejecutar si el estado está listo
-    if (this.isLoading || !this.playerState) {
-        this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
-        return;
+  gameLoop = (timestamp: number) => {
+    if (!this.playerState) {
+      this.animationFrameId = requestAnimationFrame(this.gameLoop);
+      return;
     }
 
     let moved = false;
 
-    // 1. Actualización de posición local
-    if (this.keysPressed['ArrowUp'] || this.keysPressed['KeyW']) {
+    if (this.keysPressed['KeyW'] || this.keysPressed['ArrowUp']) {
       this.playerState.y -= this.SPEED;
       moved = true;
     }
-    if (this.keysPressed['ArrowDown'] || this.keysPressed['KeyS']) {
+    if (this.keysPressed['KeyS'] || this.keysPressed['ArrowDown']) {
       this.playerState.y += this.SPEED;
       moved = true;
     }
-    if (this.keysPressed['ArrowLeft'] || this.keysPressed['KeyA']) {
+    if (this.keysPressed['KeyA'] || this.keysPressed['ArrowLeft']) {
       this.playerState.x -= this.SPEED;
       moved = true;
     }
-    if (this.keysPressed['ArrowRight'] || this.keysPressed['KeyD']) {
+    if (this.keysPressed['KeyD'] || this.keysPressed['ArrowRight']) {
       this.playerState.x += this.SPEED;
       moved = true;
     }
 
-    // 2. Enviar posición al Servidor (si es hora)
+    this.clampPlayer();
+    this.updateCamera();
+
     if (moved && timestamp - this.lastSendTime > this.SEND_INTERVAL) {
       this.wsService.sendMovement(this.playerState);
       this.lastSendTime = timestamp;
     }
 
-    // 3. Continuar el bucle
-    this.animationFrameId = window.requestAnimationFrame(this.gameLoop.bind(this));
+    this.animationFrameId = requestAnimationFrame(this.gameLoop);
+  };
+
+  updateCamera(): void {
+    this.cameraX = this.VIEWPORT_WIDTH / 2 - this.playerState.x;
+    this.cameraY = this.VIEWPORT_HEIGHT / 2 - this.playerState.y;
   }
 
-  // --- Manejo de Sincronización Global (sin cambios) ---
+  clampPlayer(): void {
+    this.playerState.x = Math.max(
+      0,
+      Math.min(this.WORLD_WIDTH, this.playerState.x)
+    );
+    this.playerState.y = Math.max(
+      0,
+      Math.min(this.WORLD_HEIGHT, this.playerState.y)
+    );
+  }
 
-  handleGlobalSync(positions: Position[]): void {
-    const activeIds = new Set(positions.map(p => p.playerId));
+  handleWorldSnapshot(snapshot: WorldSnapshot): void {
+    const activeIds = new Set(snapshot.players.map((p) => p.playerId));
 
-    // 1. Actualizar/Crear naves remotas
-    positions.forEach(pos => {
-      if (pos.playerId === this.PLAYER_ID) {
-        return; // Ignora tu propia nave
+    snapshot.players.forEach((p) => {
+      if (p.playerId !== this.PLAYER_ID) {
+        this.otherShips.set(p.playerId, p);
       }
-
-      // Actualiza o añade la nave al mapa
-      this.otherShips.set(pos.playerId, pos);
     });
 
-    // 2. Limpieza: Eliminar naves de jugadores desconectados
-    this.otherShips.forEach((ship, id) => {
-      if (!activeIds.has(id)) {
-        this.otherShips.delete(id);
+    [...this.otherShips.keys()].forEach((id) => {
+      if (!activeIds.has(id)) this.otherShips.delete(id);
+    });
+
+    // Monsters
+    this.monsters.clear();
+    snapshot.monsters.forEach((m) => {
+      if (m.alive) {
+        this.monsters.set(m.id, m);
       }
     });
   }
+
+  handleKeyDown = (e: KeyboardEvent) => (this.keysPressed[e.code] = true);
+  handleKeyUp = (e: KeyboardEvent) => (this.keysPressed[e.code] = false);
 }

@@ -1,6 +1,6 @@
 package com.sparklecow.dark_engine_protocol.controllers;
 
-import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.PlayerResponseDto;
 import com.sparklecow.dark_engine_protocol.services.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.sparklecow.dark_engine_protocol.models;
+package com.sparklecow.dark_engine_protocol.models.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

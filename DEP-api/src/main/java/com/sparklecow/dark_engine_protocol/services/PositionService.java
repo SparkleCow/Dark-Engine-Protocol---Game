@@ -1,7 +1,6 @@
 package com.sparklecow.dark_engine_protocol.services;
 
 import com.sparklecow.dark_engine_protocol.entities.LastPosition;
-import com.sparklecow.dark_engine_protocol.entities.Player;
 import com.sparklecow.dark_engine_protocol.entities.Position;
 import com.sparklecow.dark_engine_protocol.repositories.PlayerRepository;
 import com.sparklecow.dark_engine_protocol.repositories.PositionRepository;

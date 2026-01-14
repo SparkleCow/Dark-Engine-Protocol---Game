@@ -2,7 +2,7 @@ package com.sparklecow.dark_engine_protocol.services;
 
 import com.sparklecow.dark_engine_protocol.entities.Player;
 import com.sparklecow.dark_engine_protocol.mappers.PlayerMapper;
-import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.PlayerResponseDto;
 import com.sparklecow.dark_engine_protocol.repositories.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

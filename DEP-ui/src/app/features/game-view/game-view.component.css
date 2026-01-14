@@ -1,118 +1,91 @@
-/* src/app/game-view/game-view.component.css */
-
 :host {
-    /* El componente debe ocupar toda la pantalla */
-    display: block;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
-    color: #fff;
-    overflow: hidden;
-    margin: 0;
-    font-family: Arial, sans-serif;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: black;
 }
 
-#status {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    padding: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #00ff00;
-    z-index: 100; /* Asegura que esté encima */
+/* ---------------------------
+   VIEWPORT (CÁMARA)
+---------------------------- */
+#viewport {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
-/* El área de juego es el cuerpo del componente */
-#game-area {
-    width: 100%;
-    height: 100%;
-    position: relative;
+/* ---------------------------
+   WORLD
+---------------------------- */
+#world {
+  position: absolute;
+  width: 5000px;
+  height: 5000px;
 
-    /* 💥 MODIFICACIÓN PARA EL FONDO 💥 */
-    background-image: url('/map1.jpeg'); /* 💥 RUTA PROBLEMA 💥 */
-
-    background-size: cover;          /* Cubre todo el contenedor */
-    background-position: center;     /* Centra la imagen */
-    background-repeat: no-repeat;    /* Evita que se repita */
-    /* ---------------------------------- */
+  background-image: url("/map1.jpeg");
+  background-repeat: repeat;
 }
 
-/* ------------------------------------------------------------- */
-/* 🚀 1. CONTENEDORES DE LAS NAVES (Manejan la posición y el transform) 🚀 */
-/* ------------------------------------------------------------- */
-
-/* Contenedor que maneja la posición y rotación de TU nave */
-.player-ship-container {
-    position: absolute;
-    transition: transform 0.1s linear;
-    will-change: transform;
-    /* ⚠️ IMPORTANTE: Ajuste para centrar el origen (30px/2) en la coordenada (x, y) */
-    width: 30px;
-    height: 30px;
-    margin-left: -15px;
-    margin-top: -15px;
+/* ---------------------------
+   NAVES
+---------------------------- */
+.ship {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
 }
 
-/* Contenedor que maneja la posición y rotación de OTRAS naves */
-.other-ship-container {
-    position: absolute;
-    transition: transform 0.1s linear;
-    will-change: transform;
-    width: 30px;
-    height: 30px;
-    margin-left: -15px;
-    margin-top: -15px;
-    pointer-events: none; /* Ignora clics */
+.ship img {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-
-/* ------------------------------------------------------------- */
-/* 👾 2. ELEMENTOS VISUALES DENTRO DEL CONTENEDOR 👾 */
-/* ------------------------------------------------------------- */
-
-/* Elemento visual de tu nave (Astro.png) */
-.player-ship-container .ship-visual {
-    /* Si el elemento es una <img>, le damos el tamaño completo del contenedor */
-    width: 30px;
-    height: 30px;
-    position: absolute;
-}
-/* Asegura que la imagen dentro del .ship-visual ocupe el espacio */
-.player-ship-container .ship-visual img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    /* Opcional: Evita que la imagen sea arrastrada */
-    user-select: none;
-}
-
-/* Elemento visual de las naves de otros jugadores (manteniendo el círculo rojo original) */
-.other-ship-container .ship-visual-other {
-    width: 30px;
-    height: 30px;
-    background-color: #ff0000; /* Rojo */
-    border-radius: 50%;
-    position: absolute;
-}
-
-
-/* ------------------------------------------------------------- */
-/* 🏷️ 3. ETIQUETA DEL NOMBRE DE USUARIO 🏷️ */
-/* ------------------------------------------------------------- */
 
 .username-tag {
-    /* Posicionamiento en relación con el contenedor (30px de la nave) */
-    position: absolute;
-    top: 35px; /* 5px debajo de la nave de 30px de alto */
-    left: 50%;
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: white;
+  white-space: nowrap;
+  text-shadow: 0 0 3px black;
+}
 
-    transform: translateX(-50%); /* Centra el texto horizontalmente */
+/* ---------------------------
+   MONSTRUOS
+---------------------------- */
+.monster {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
 
-    white-space: nowrap;
-    color: #fff;
-    font-size: 11px;
-    font-weight: bold;
-    text-shadow: 0 0 3px #000;
-    padding: 2px 5px;
-    border-radius: 3px;
-    z-index: 10;
+  border-radius: 50%;
+  background: crimson;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+}
+
+.monster-name {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #ffcccc;
+  white-space: nowrap;
+  text-shadow: 0 0 3px black;
+}
+
+/* ---------------------------
+   LOADING
+---------------------------- */
+.loading {
+  color: white;
+  padding: 40px;
 }

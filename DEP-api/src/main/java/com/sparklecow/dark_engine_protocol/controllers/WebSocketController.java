@@ -27,7 +27,7 @@ public class WebSocketController {
     public void handleMovement(Position position, SimpMessageHeaderAccessor headerAccessor) {
 
 
-        // 1. Obtener el Player ID Autenticado y Seguro (Reemplazar con tu lógica de autenticación)
+        // 1. Obtener el Player ID Autenticado y Seguro
         // **IMPORTANTE**: No confíes en el ID enviado por el cliente. Debe venir de la sesión.
         // Por ahora, usaremos el que viene en el objeto Position para pruebas:
         log.info("Jugador {} se movió a X={} Y={}", position.getPlayerId(), position.getX(), position.getY());

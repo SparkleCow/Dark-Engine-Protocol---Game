@@ -1,9 +1,8 @@
 package com.sparklecow.dark_engine_protocol.mappers;
 
-import com.sparklecow.dark_engine_protocol.entities.LastPosition;
 import com.sparklecow.dark_engine_protocol.entities.Player;
-import com.sparklecow.dark_engine_protocol.models.PlayerRequestDto;
-import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.PlayerRequestDto;
+import com.sparklecow.dark_engine_protocol.models.dtos.PlayerResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

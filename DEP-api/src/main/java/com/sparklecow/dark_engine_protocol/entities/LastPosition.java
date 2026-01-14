@@ -17,7 +17,6 @@ public class LastPosition {
 
     @Id
     private Long playerId;
-
     private double x;
     private double y;
     private int mapId;
