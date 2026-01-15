@@ -1,8 +1,8 @@
 package com.sparklecow.dark_engine_protocol.service;
 
-import com.sparklecow.dark_engine_protocol.entities.Player;
+import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;
 
 public interface PlayerService {
 
-    Player findByUsername(String username);
+    PlayerResponseDto findByUsername(String username);
 }

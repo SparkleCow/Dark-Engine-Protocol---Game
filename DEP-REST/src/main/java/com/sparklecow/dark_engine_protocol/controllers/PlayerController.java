@@ -1,8 +1,7 @@
 package com.sparklecow.dark_engine_protocol.controllers;
 
-import com.sparklecow.dark_engine_protocol.entities.Player;
+import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;
 import com.sparklecow.dark_engine_protocol.service.PlayerService;
-import com.sparklecow.dark_engine_protocol.service.PlayerServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,7 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @GetMapping("/me")
-    public ResponseEntity<Player> me(Authentication authentication){
-
-        String username = authentication.getName();
-
-        Player player = playerService.findByUsername(username);
-
-        return ResponseEntity.ok(player);
+    public ResponseEntity<PlayerResponseDto> me(Authentication authentication){
+        return ResponseEntity.ok(playerService.findByUsername(authentication.getName()));
     }
 }
