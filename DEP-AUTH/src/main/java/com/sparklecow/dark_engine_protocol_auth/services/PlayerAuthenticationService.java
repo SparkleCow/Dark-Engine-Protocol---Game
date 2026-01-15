@@ -9,10 +9,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import javax.management.relation.RoleResult;
 import java.util.List;
@@ -27,10 +26,12 @@ public class PlayerAuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final RoleRepository roleRepository;
+    private final RestClient restClient;
+
 
     public void register(PlayerRegisterDto playerRegisterDto){
 
-        Role playerRole = roleRepository.findByName(String.valueOf(RoleEnum.ROLE_PLAYER))
+        Role playerRole = roleRepository.findByName(RoleEnum.ROLE_PLAYER)
                 .orElseThrow(() -> new IllegalStateException("ROLE_PLAYER not found"));
 
         PlayerAuthentication playerAuthentication = PlayerAuthentication
@@ -42,7 +43,7 @@ public class PlayerAuthenticationService {
                 .build();
 
         playerAuthenticationRepository.save(playerAuthentication);
-        // TODO notificar a REST que se creo este usuario y que el debe crear el player como tal
+        notifyRestService(playerRegisterDto);
     }
 
     public AuthResponseDto login(PlayerLoginDto playerLogindto) {
@@ -66,6 +67,19 @@ public class PlayerAuthenticationService {
         String token = jwtUtils.generateToken(player, claims);
 
         return new AuthResponseDto(token);
+    }
+
+    private void notifyRestService(PlayerRegisterDto dto) {
+        PlayerCreationEventDto event = new PlayerCreationEventDto(
+                dto.username(),
+                dto.email()
+        );
+
+        restClient.post()
+                .uri("/create")
+                .body(event)
+                .retrieve()
+                .toBodilessEntity();
     }
 
 }

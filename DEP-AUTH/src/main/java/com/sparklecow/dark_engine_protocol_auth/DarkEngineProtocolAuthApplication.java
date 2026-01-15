@@ -11,5 +11,4 @@ public class DarkEngineProtocolAuthApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DarkEngineProtocolAuthApplication.class, args);
 	}
-
 }

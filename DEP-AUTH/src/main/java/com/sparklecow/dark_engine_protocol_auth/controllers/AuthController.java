@@ -1,5 +1,7 @@
 package com.sparklecow.dark_engine_protocol_auth.controllers;
 
+import com.sparklecow.dark_engine_protocol_auth.entites.AuthResponseDto;
+import com.sparklecow.dark_engine_protocol_auth.entites.PlayerLoginDto;
 import com.sparklecow.dark_engine_protocol_auth.entites.PlayerRegisterDto;
 import com.sparklecow.dark_engine_protocol_auth.services.PlayerAuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,12 @@ public class AuthController {
 
     @PutMapping("/register")
     public ResponseEntity<Void> register(PlayerRegisterDto playerRegisterDto){
+        playerAuthenticationService.register(playerRegisterDto);
+        return ResponseEntity.ok().build();
+    }
 
+    @PutMapping("/login")
+    public ResponseEntity<AuthResponseDto> login(PlayerLoginDto playerLoginDto){
+        return ResponseEntity.ok(playerAuthenticationService.login(playerLoginDto));
     }
 }
