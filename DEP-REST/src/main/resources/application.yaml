@@ -1,3 +1,29 @@
+server:
+  port: 8081
+
 spring:
   application:
-    name: dark-engine-protocol
+    name: dark-engine-protocol-rest
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dep
+    username: postgres
+    password: Borman15
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret_key: ${SECRET_KEY}
+      expiration: 8640000
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:*}
