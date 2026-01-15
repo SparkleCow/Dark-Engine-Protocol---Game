@@ -1,0 +1,13 @@
+package com.sparklecow.dark_engine_protocol_auth.repositories;
+
+import com.sparklecow.dark_engine_protocol_auth.entites.PlayerAuthentication;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface PlayerAuthenticationRepository extends JpaRepository<PlayerAuthentication, Long> {
+
+    Optional<PlayerAuthentication> findPlayerAuthenticationByUsername(String username);
+}

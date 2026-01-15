@@ -7,12 +7,10 @@ import { PlayerRequestDto } from '../../models/player-request-dto';
 
 /*Auth service for login, register, save and retrieve jwt token and playerId from localStorage*/
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private readonly api = 'http://localhost:8080/api/auth';
-  private PLAYER_ID_KEY = 'player-id';
   private JWT_KEY = 'jwt';
 
   constructor(private http: HttpClient) {}
@@ -25,14 +23,6 @@ export class AuthService {
     return this.http.post<void>(`${this.api}/register`, payload);
   }
 
-  savePlayerId(playerId: string): void {
-    localStorage.setItem(this.PLAYER_ID_KEY, playerId);
-  }
-
-  getPlayerId(): string | null {
-    return localStorage.getItem(this.PLAYER_ID_KEY);
-  }
-
   saveToken(token: string): void {
     localStorage.setItem(this.JWT_KEY, token);
   }
@@ -42,9 +32,8 @@ export class AuthService {
   }
 
   // Cleanup Method
-  
+
   clearAuthData(): void {
-    localStorage.removeItem(this.PLAYER_ID_KEY);
     localStorage.removeItem(this.JWT_KEY);
   }
 }

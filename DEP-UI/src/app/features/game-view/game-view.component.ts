@@ -50,9 +50,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
     public wsService: WebsocketService,
     private authService: AuthService,
     private playerService: PlayerService
-  ) {
-    this.PLAYER_ID = Number(this.authService.getPlayerId());
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loadInitialState();
@@ -73,6 +71,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
     this.playerService.$getPlayerInformation().subscribe({
       next: (data: PlayerResponseDto) => {
         this.PLAYER_USERNAME = data.username;
+        this.PLAYER_ID = data.id;
 
         this.playerState = {
           playerId: this.PLAYER_ID,

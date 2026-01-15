@@ -9,16 +9,23 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 	<groupId>com.sparklecow</groupId>
-	<artifactId>dark-engine-protocol</artifactId>
+	<artifactId>dark-engine-protocol-websocket</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dark-engine-protocol</name>
-	<description>api for dark-engine-protocol</description>
+	<name>dark-engine-protocol-web-socket</name>
+	<description>api websocket for dark-engine-protocol</description>
 	<url/>
 	<licenses>
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>sparklecow</id>
+			<name>Jonathan David Ramos Gallego</name>
+			<roles>
+				<role>Backend Developer</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
