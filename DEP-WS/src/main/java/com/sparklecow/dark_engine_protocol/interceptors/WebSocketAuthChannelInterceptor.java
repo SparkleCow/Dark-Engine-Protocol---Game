@@ -1,7 +1,6 @@
 package com.sparklecow.dark_engine_protocol.interceptors;
 
 import com.sparklecow.dark_engine_protocol.config.jwt.JwtUtils;
-import com.sparklecow.dark_engine_protocol.entities.Player;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -10,14 +9,21 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-
-/*Esto se hizo para interceptar el STOMP y ponerle el ID del usuario logueado a traves del jwt
-  con el fin de poder usar ese ID para crear un position nuevo y guardarlo en la db.
-  TODO Comentar esto bien :D
-* */
+/*
+ * This interceptor intercepts incoming STOMP messages in order to authenticate
+ * WebSocket connections using a JWT token.
+ *
+ * On STOMP CONNECT:
+ * - The JWT is extracted from the "Authorization" header.
+ * - The token is validated.
+ * - The username (JWT subject) is extracted.
+ * - The username is attached to the WebSocket session attributes.
+ *
+ * The username acts as the canonical identity at the WebSocket level.
+ * Database access and Spring Security are intentionally avoided here.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -27,44 +33,55 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
+
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
+        if (accessor == null) {
+            return message;
+        }
+
+        // Only authenticate on initial CONNECT frame
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String authorizationHeader = accessor.getFirstNativeHeader("Authorization");
 
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                String jwt = authorizationHeader.substring(7);
+            String authorizationHeader =
+                    accessor.getFirstNativeHeader("Authorization");
 
-                try {
-                    // 3. Obtener la autenticación
-                    Authentication authentication = jwtUtils.getAuthentication(jwt);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                log.warn("Missing or invalid Authorization header on STOMP CONNECT");
+                throw new RuntimeException("Missing Authorization header");
+            }
 
-                    // 4. Guardar la autenticación en la sesión
-                    accessor.setUser(authentication);
+            String jwt = authorizationHeader.substring(7);
 
-                    // 5. OBTENER Y GUARDAR EL PLAYER ID:
-                    // Ya que tu UserDetailsService devuelve la entidad Player
-                    // que implementa UserDetails, casteamos a Player.
-
-                    Object principal = authentication.getPrincipal();
-                    if (principal instanceof Player) {
-                        Player player = (Player) principal;
-
-                        // Usamos el getter getId() de la entidad Player
-                        Long playerId = player.getId();
-
-                        // Guardar en los atributos de la sesión de WebSocket
-                        accessor.getSessionAttributes().put("PlayerId", playerId.toString());
-
-                        log.info("STOMP Session {} successfully authenticated for Player ID: {}",
-                                accessor.getSessionId(), playerId);
-                    } else {
-                        throw new IllegalStateException("Principal is not a Player entity.");
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("Invalid JWT token or authentication failure.", e);
+            try {
+                // Validate token integrity and expiration
+                if (!jwtUtils.validateToken(jwt)) {
+                    throw new RuntimeException("JWT token is invalid or expired");
                 }
+
+                // Extract username (subject)
+                String username = jwtUtils.extractUsername(jwt);
+
+                if (username == null || username.isBlank()) {
+                    throw new RuntimeException("JWT does not contain a valid username");
+                }
+
+                // Store username in WebSocket session
+                accessor.getSessionAttributes().put("username", username);
+
+                log.info(
+                        "STOMP session {} authenticated for username: {}",
+                        accessor.getSessionId(),
+                        username
+                );
+
+            } catch (Exception e) {
+                log.error("WebSocket JWT authentication failed", e);
+                throw new RuntimeException(
+                        "Invalid JWT token or authentication failure",
+                        e
+                );
             }
         }
         return message;

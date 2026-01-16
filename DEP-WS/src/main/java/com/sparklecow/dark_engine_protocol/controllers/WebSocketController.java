@@ -1,6 +1,6 @@
 package com.sparklecow.dark_engine_protocol.controllers;
 
-import com.sparklecow.dark_engine_protocol.entities.Position;
+import com.sparklecow.dark_engine_protocol.models.Position;
 import com.sparklecow.dark_engine_protocol.services.PositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,44 +9,47 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.util.Objects;
-
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class WebSocketController {
 
     private final PositionService positionService;
-    private final SimpMessagingTemplate messagingTemplate; // Para el Broadcast
+    private final SimpMessagingTemplate messagingTemplate;
 
     /**
-     * Maneja los mensajes de movimiento de los clientes.
-     * El cliente envía a: /app/move (ver WebSocketConfig)
-     * @param position El objeto Position enviado por Godot (serializado desde JSON).
-     * @param headerAccessor Contiene información de la sesión (para autenticación).
+     * Handles movement messages sent by clients.
+     * Clients send messages to: /app/move
+     * The authenticated username is retrieved from the STOMP session attributes,
+     * previously set by the WebSocketAuthChannelInterceptor during CONNECT.
+     * No database access or authentication logic is performed here.
      */
     @MessageMapping("/move")
-    public void handleMovement(Position position, SimpMessageHeaderAccessor headerAccessor) {
+    public void handleMovement(
+            Position position,
+            SimpMessageHeaderAccessor headerAccessor
+    ) {
 
-        // 1. Obtener el Player ID Autenticado y Seguro
-        Long playerId = Long.valueOf(
-                headerAccessor.getSessionAttributes()
-                        .get("PlayerId")
-                        .toString());
+        Object usernameAttr =
+                headerAccessor.getSessionAttributes().get("username");
 
-        log.info("Jugador {} se movió a X={} Y={}", playerId, position.getX(), position.getY());
-
-        if (playerId != null) {
-
-            // 2. Actualizar la posición en Redis
-            positionService.updatePosition(position);
-
-            // 3. Notificación Inmediata (Broadcast)
-            // Envía la posición actualizada a todos los clientes suscritos al topic.
-            // Los clientes se suscriben a: /topic/updates/movement
-            messagingTemplate.convertAndSend("/topic/updates/movement", position);
+        if (usernameAttr == null) {
+            log.warn("Movement received without authenticated username");
+            return;
         }
+
+        String username = usernameAttr.toString();
+
+        log.info(
+                "User {} moved to X={} Y={}",
+                username,
+                position.getX(),
+                position.getY()
+        );
+
+        // Associate the position update with the username
+        positionService.updatePosition(username, position);
     }
 
-    // TODO: Crear métodos @MessageMapping para Disparos, Recolección, etc.
+    // TODO: Add @MessageMapping handlers for shooting, pickups, combat, etc.
 }

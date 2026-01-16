@@ -1,6 +1,6 @@
 package com.sparklecow.dark_engine_protocol.services;
 
-import com.sparklecow.dark_engine_protocol.entities.Position;
+import com.sparklecow.dark_engine_protocol.models.Position;
 import com.sparklecow.dark_engine_protocol.models.MonsterSnapshot;
 import com.sparklecow.dark_engine_protocol.models.WorldSnapshot;
 import lombok.RequiredArgsConstructor;

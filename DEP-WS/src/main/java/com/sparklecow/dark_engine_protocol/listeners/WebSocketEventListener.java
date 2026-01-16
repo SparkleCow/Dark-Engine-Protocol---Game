@@ -1,6 +1,6 @@
 package com.sparklecow.dark_engine_protocol.listeners;
 
-import com.sparklecow.dark_engine_protocol.entities.Position;
+import com.sparklecow.dark_engine_protocol.models.Position;
 import com.sparklecow.dark_engine_protocol.services.PositionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,35 +18,56 @@ public class WebSocketEventListener {
     private final PositionService positionService;
 
     /**
-     * Captura el evento de desconexión de cualquier sesión WebSocket/STOMP.
-     * @param event El evento de desconexión de la sesión.
+     * Listens for WebSocket/STOMP session disconnect events.
+     *
+     * When a client disconnects:
+     * - The authenticated username is retrieved from the STOMP session attributes.
+     * - The player's last known position is fetched from Redis.
+     * - The position is removed from Redis to avoid ghost players.
+     *
+     * Persistence to the database is intentionally deferred and will be handled later.
      */
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 
-        // 1. Obtener acceso a los headers y atributos de la sesión STOMP
         StompHeaderAccessor headerAccessor =
                 MessageHeaderAccessor.getAccessor(event.getMessage(), StompHeaderAccessor.class);
 
-        // 2. RECUPERAR EL PLAYER ID
-        // La clave "PlayerId" fue almacenada por el WebSocketAuthChannelInterceptor.
-        String playerIdString = (String) headerAccessor.getSessionAttributes().get("PlayerId");
+        if (headerAccessor == null || headerAccessor.getSessionAttributes() == null) {
+            log.warn("Session disconnected with no STOMP headers available. SessionId={}", event.getSessionId());
+            return;
+        }
 
-        if (playerIdString != null) {
-            log.info("Player {} disconnected. Initiating position save sequence.", playerIdString);
+        // Username was stored by WebSocketAuthChannelInterceptor on CONNECT
+        String username =
+                (String) headerAccessor.getSessionAttributes().get("username");
 
-            // 3. Leer la última posición en tiempo real de Redis
-            // El PositionService usará playerIdString para buscar la clave POS:1
-            Position finalPosition = positionService.getPosition(playerIdString);
+        if (username == null) {
+            log.warn(
+                    "WebSocket session {} disconnected but no username found in session attributes.",
+                    event.getSessionId()
+            );
+            return;
+        }
 
-            if (finalPosition != null) {
-                positionService.saveLastPosition(Long.parseLong(playerIdString), finalPosition);
-                positionService.deletePositionFromRedis(playerIdString);
-            } else {
-                log.warn("Player {} disconnected, but no position found in Redis. Skip persistence.", playerIdString);
-            }
+        log.info("Player '{}' disconnected. Cleaning up runtime state.", username);
+
+        // Fetch last known position from Redis (runtime state)
+        Position finalPosition = positionService.getPosition(username);
+
+        if (finalPosition != null) {
+            // For now: only clean up Redis
+            positionService.deletePosition(username);
+
+            log.info(
+                    "Runtime position for player '{}' removed from Redis.",
+                    username
+            );
         } else {
-            log.warn("Unknown session disconnected (ID: {}) - PlayerId not found in attributes. Skipping save.", event.getSessionId());
+            log.warn(
+                    "Player '{}' disconnected but no position was found in Redis.",
+                    username
+            );
         }
     }
 }

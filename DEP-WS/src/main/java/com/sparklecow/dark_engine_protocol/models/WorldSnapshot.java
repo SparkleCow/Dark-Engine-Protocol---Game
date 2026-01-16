@@ -1,7 +1,5 @@
 package com.sparklecow.dark_engine_protocol.models;
 
-import com.sparklecow.dark_engine_protocol.entities.Position;
-
 import java.util.List;
 
 public class WorldSnapshot {

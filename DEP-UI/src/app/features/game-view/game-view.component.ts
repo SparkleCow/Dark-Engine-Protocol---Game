@@ -33,7 +33,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
 
   playerState!: Position;
 
-  otherShips: Map<number, Position> = new Map();
+  otherShips: Map<string, Position> = new Map();
   monsters: Map<string, MonsterSnapshot> = new Map();
 
   cameraX = 0;
@@ -74,12 +74,11 @@ export class GameViewComponent implements OnInit, OnDestroy {
         this.PLAYER_ID = data.id;
 
         this.playerState = {
-          playerId: this.PLAYER_ID,
           x: data.lastPosition.x,
           y: data.lastPosition.y,
           angle: data.lastPosition.angle,
           mapId: data.lastPosition.mapId,
-          username: data.username,
+          username: this.PLAYER_USERNAME,
         };
 
         this.wsService.connect(this.PLAYER_ID);
@@ -146,11 +145,11 @@ export class GameViewComponent implements OnInit, OnDestroy {
   }
 
   handleWorldSnapshot(snapshot: WorldSnapshot): void {
-    const activeIds = new Set(snapshot.players.map((p) => p.playerId));
+    const activeIds = new Set(snapshot.players.map((p) => p.username));
 
     snapshot.players.forEach((p) => {
-      if (p.playerId !== this.PLAYER_ID) {
-        this.otherShips.set(p.playerId, p);
+      if (p.username !== this.PLAYER_USERNAME) {
+        this.otherShips.set(p.username, p);
       }
     });
 

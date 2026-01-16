@@ -1,24 +1,25 @@
-package com.sparklecow.dark_engine_protocol.entities;
+package com.sparklecow.dark_engine_protocol.models;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 
-@Entity
-@Table(name = "last_position")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LastPosition {
+@Builder
+public class Position implements Serializable {
 
-    @Id
-    private Long playerId;
     private double x;
+
     private double y;
+
     private int mapId;
+
     private double angle;
+
+    private String username;
 }
