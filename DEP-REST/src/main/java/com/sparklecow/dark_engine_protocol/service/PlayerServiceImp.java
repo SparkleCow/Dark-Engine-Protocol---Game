@@ -1,7 +1,6 @@
 package com.sparklecow.dark_engine_protocol.service;
 
-import com.sparklecow.dark_engine_protocol.entities.Player;
-import com.sparklecow.dark_engine_protocol.entities.PlayerCreationEventDto;
+import com.sparklecow.dark_engine_protocol.entities.*;
 import com.sparklecow.dark_engine_protocol.mappers.PlayerMapper;
 import com.sparklecow.dark_engine_protocol.models.PlayerResponseDto;
 import com.sparklecow.dark_engine_protocol.repositories.PlayerRepository;
@@ -23,6 +22,28 @@ public class PlayerServiceImp implements PlayerService {
 
     @Override
     public void createInitialPlayer(PlayerCreationEventDto playerCreationEventDto) {
+        Stats stats = Stats.builder()
+                .level(1)
+                .experience(0L)
+                .honor(0L)
+                .companyPoints(0L)
+                .build();
 
+        Inventory inventory = Inventory.builder().build();
+
+        LastPosition position = LastPosition.builder()
+                .x(20)
+                .y(20)
+                .angle(0)
+                .mapId(1)
+                .build();
+
+        playerRepository.save(Player.builder()
+                .username(playerCreationEventDto.username())
+                .email(playerCreationEventDto.email())
+                .stats(stats)
+                .inventory(inventory)
+                .lastPosition(position)
+                .build());
     }
 }

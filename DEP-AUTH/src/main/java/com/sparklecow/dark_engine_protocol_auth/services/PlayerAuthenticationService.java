@@ -4,7 +4,9 @@ import com.sparklecow.dark_engine_protocol_auth.config.jwt.JwtUtils;
 import com.sparklecow.dark_engine_protocol_auth.entites.*;
 import com.sparklecow.dark_engine_protocol_auth.repositories.PlayerAuthenticationRepository;
 import com.sparklecow.dark_engine_protocol_auth.repositories.RoleRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import javax.management.relation.RoleResult;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,10 @@ public class PlayerAuthenticationService {
     private final JwtUtils jwtUtils;
     private final RoleRepository roleRepository;
     private final RestClient restClient;
+    @Value("${application.internal.api-key}")
+    private String INTERNAL_API_KEY;
 
-
+    @Transactional
     public void register(PlayerRegisterDto playerRegisterDto){
 
         Role playerRole = roleRepository.findByName(RoleEnum.ROLE_PLAYER)
@@ -76,7 +79,8 @@ public class PlayerAuthenticationService {
         );
 
         restClient.post()
-                .uri("/create")
+                .uri("/player/internal/create")
+                .header("X-INTERNAL-KEY", INTERNAL_API_KEY)
                 .body(event)
                 .retrieve()
                 .toBodilessEntity();

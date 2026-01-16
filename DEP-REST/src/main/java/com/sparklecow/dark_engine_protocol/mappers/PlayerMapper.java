@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PlayerMapper {
 
-    private final PasswordEncoder passwordEncoder;
-
     public PlayerResponseDto playerToDto(Player player) {
         if (player == null) return null;
 

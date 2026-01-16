@@ -21,7 +21,7 @@ public class PlayerController {
         return ResponseEntity.ok(playerService.findByUsername(authentication.getName()));
     }
 
-    @PostMapping("/create")
+    @PostMapping("/internal/create")
     public ResponseEntity<Void> createPlayer(@RequestBody PlayerCreationEventDto playerCreationEventDto) {
         playerService.createInitialPlayer(playerCreationEventDto);
         return ResponseEntity.ok().build();

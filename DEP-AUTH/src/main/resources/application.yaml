@@ -27,3 +27,5 @@ application:
       expiration: 8640000
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:*}
+  internal:
+    api-key: super-secret-auth-key-123

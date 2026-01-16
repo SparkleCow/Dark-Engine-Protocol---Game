@@ -1,5 +1,6 @@
 package com.sparklecow.dark_engine_protocol.config.security;
 
+import com.sparklecow.dark_engine_protocol.config.filters.InternalApiKeyFilter;
 import com.sparklecow.dark_engine_protocol.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -21,6 +23,7 @@ public class SecurityFilterConfig {
     @Value("${application.cors.allowed-origins}")
     private String allowedOrigins;
     private final JwtFilter jwtFilter;
+    private final InternalApiKeyFilter internalApiKeyFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception {
@@ -28,11 +31,19 @@ public class SecurityFilterConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .authorizeHttpRequests(auth->
-                        auth.anyRequest()
-                                .authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth-> auth
+                        .requestMatchers("/player/internal/**").permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .addFilterBefore(
+                        internalApiKeyFilter,
+                        AuthorizationFilter.class
+                )
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .build();
     }
 

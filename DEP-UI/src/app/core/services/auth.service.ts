@@ -10,7 +10,7 @@ import { PlayerRequestDto } from '../../models/player-request-dto';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly api = 'http://localhost:8080/api/auth';
+  private readonly api = 'http://localhost:8082/auth';
   private JWT_KEY = 'jwt';
 
   constructor(private http: HttpClient) {}

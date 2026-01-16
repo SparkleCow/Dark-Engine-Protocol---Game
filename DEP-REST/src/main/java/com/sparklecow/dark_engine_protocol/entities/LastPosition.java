@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class LastPosition {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long playerId;
     private double x;
     private double y;
