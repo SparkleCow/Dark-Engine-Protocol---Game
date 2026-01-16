@@ -16,21 +16,6 @@ spring:
   cache:
     type: redis
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/dep
-    username: postgres
-    password: Borman15
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
 application:
   security:
     jwt:
