@@ -1,0 +1,91 @@
+<div class="interface-container">
+  <header class="resource-header">
+    <div class="brand-box">
+      <h1 class="logo-text">{{ title }}</h1>
+    </div>
+    <div class="currency-display">
+      <div class="res-slot">
+        <span class="label">URIDIUM:</span>
+        <span class="value">130.455.200</span>
+      </div>
+      <div class="res-slot">
+        <span class="label">CREDITOS:</span>
+        <span class="value">568.885.304</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="command-center">
+    <div class="nav-hub">
+      <div class="nav-group">
+        <button class="nav-item">HANGAR</button>
+        <button class="nav-item">CLAN</button>
+        <button class="nav-item">SKYLAB</button>
+      </div>
+
+      <div class="launch-zone">
+        <button class="main-start-btn">INICIO</button>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-item">TIENDA %</button>
+        <button class="nav-item">SUBASTA</button>
+        <button class="nav-item active">PERFIL</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="content-stage">
+    <div class="dual-panel-layout">
+      <section class="tech-panel ranking">
+        <div class="panel-header-tab">CARNÉ DE PILOTO</div>
+        <div class="pilot-profile">
+          <div class="pilot-avatar">
+            <img src="Astro.png" alt="" />
+          </div>
+          <div class="pilot-meta">
+            <h2>MaqmaMexDO-</h2>
+            <p>Piloto especial básico <span>| Nivel 15</span></p>
+          </div>
+        </div>
+        <div class="ranking-table-wrapper">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>NOMBRE</th>
+                <th>RANGO</th>
+                <th>VALOR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let p of pilotos"
+                [class.highlight-row]="p.nombre === '-MaqmaMexDO-'"
+              >
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.rango }}</td>
+                <td>{{ p.valor }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="tech-panel rewards">
+        <div class="panel-header-tab highlight">SISTEMA DE RECOMPENSAS</div>
+        <div class="rewards-inner">
+          <div class="gift-icon">🎁</div>
+          <h3>Calendario Mensual Deluxe</h3>
+          <p>
+            Optimiza tu rendimiento con el protocolo de suministros. Incluye
+            munición de élite y créditos extra para tu flota.
+          </p>
+          <div class="action-footer">
+            <button class="buy-action-btn">ADQUIRIR PROTOCOLO</button>
+            <div class="timer-display">CIERRE EN: 01d 05:52:10</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
