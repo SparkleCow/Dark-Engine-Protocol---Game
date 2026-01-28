@@ -1,4 +1,14 @@
 <div id="viewport" *ngIf="!isLoading">
+  <nav class="hud">
+    <button>Información</button>
+    <button>Nave</button>
+    <button>Misiones</button>
+    <p>Nivel: {{ playerInformation.stats.level }}</p>
+    <p>Experiencia: {{ playerInformation.stats.experience }}</p>
+    <p>Honor: {{ playerInformation.stats.honor }}</p>
+    <p>Puntos de compañia: {{ playerInformation.stats.companyPoints }}</p>
+  </nav>
+
   <div
     id="world"
     [style.transform]="'translate(' + cameraX + 'px,' + cameraY + 'px)'"
@@ -52,6 +62,7 @@
         [style.transform]="
           'translate(' + monster.value.x + 'px,' + monster.value.y + 'px)'
         "
+        (pointerdown)="attackMonster(monster.value.id)"
       >
         <div class="monster-name">{{ monster.value.type }}</div>
       </div>

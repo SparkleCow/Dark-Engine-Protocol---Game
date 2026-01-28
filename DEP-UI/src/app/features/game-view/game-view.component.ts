@@ -32,6 +32,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
   PLAYER_USERNAME!: string;
 
   playerState!: Position;
+  playerInformation!: PlayerResponseDto;
 
   otherShips: Map<string, Position> = new Map();
   monsters: Map<string, MonsterSnapshot> = new Map();
@@ -49,7 +50,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
   constructor(
     public wsService: WebsocketService,
     private authService: AuthService,
-    private playerService: PlayerService
+    private playerService: PlayerService,
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +71,8 @@ export class GameViewComponent implements OnInit, OnDestroy {
   loadInitialState(): void {
     this.playerService.$getPlayerInformation().subscribe({
       next: (data: PlayerResponseDto) => {
+        this.playerInformation = data;
+
         this.PLAYER_USERNAME = data.username;
         this.PLAYER_ID = data.id;
 
@@ -83,7 +86,7 @@ export class GameViewComponent implements OnInit, OnDestroy {
 
         this.wsService.connect(this.PLAYER_ID);
         this.worldSubscription = this.wsService.world$.subscribe((w) =>
-          this.handleWorldSnapshot(w)
+          this.handleWorldSnapshot(w),
         );
 
         this.animationFrameId = requestAnimationFrame(this.gameLoop);
@@ -136,11 +139,11 @@ export class GameViewComponent implements OnInit, OnDestroy {
   clampPlayer(): void {
     this.playerState.x = Math.max(
       0,
-      Math.min(this.WORLD_WIDTH, this.playerState.x)
+      Math.min(this.WORLD_WIDTH, this.playerState.x),
     );
     this.playerState.y = Math.max(
       0,
-      Math.min(this.WORLD_HEIGHT, this.playerState.y)
+      Math.min(this.WORLD_HEIGHT, this.playerState.y),
     );
   }
 
@@ -164,6 +167,15 @@ export class GameViewComponent implements OnInit, OnDestroy {
         this.monsters.set(m.id, m);
       }
     });
+  }
+
+  attackMonster(monsterId: string): void {
+    this.wsService.sendAttack(monsterId);
+    console.log(`Attacked monster with ID: ${monsterId}`);
+  }
+
+  onMonsterHover(id: string) {
+    console.log('ENTER MONSTER', id);
   }
 
   handleKeyDown = (e: KeyboardEvent) => (this.keysPressed[e.code] = true);

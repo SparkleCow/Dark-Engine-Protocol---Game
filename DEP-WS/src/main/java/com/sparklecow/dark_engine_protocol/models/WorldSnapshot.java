@@ -1,5 +1,6 @@
 package com.sparklecow.dark_engine_protocol.models;
 
+/*This model will send monsters and players in the world*/
 import java.util.List;
 
 public class WorldSnapshot {

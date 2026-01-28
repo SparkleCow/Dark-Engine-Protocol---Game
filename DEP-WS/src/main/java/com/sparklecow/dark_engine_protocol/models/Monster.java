@@ -1,5 +1,7 @@
 package com.sparklecow.dark_engine_protocol.models;
 
+import lombok.Setter;
+
 import java.util.UUID;
 
 public class Monster {
@@ -24,6 +26,8 @@ public class Monster {
     private long directionChangeIntervalMs;
 
     private Reward reward;
+    private String lastDamagedByPlayerId;
+
 
     public Monster(MonsterType type, int mapId, double x, double y) {
         this.id = UUID.randomUUID().toString();
@@ -37,6 +41,7 @@ public class Monster {
         this.maxHp = type.getBaseHp();
         this.hp = maxHp;
         this.alive = true;
+        this.lastDamagedByPlayerId = null;
 
         this.directionChangeIntervalMs = type.getDirectionChangeIntervalMs();
         scheduleNextDirectionChange();
@@ -49,20 +54,21 @@ public class Monster {
     public void update(long now) {
         if (!alive) return;
 
-        // ¿Es hora de cambiar dirección?
+        // Do we have to change direction?
         if (now >= nextDirectionChangeAt) {
             randomizeDirection();
             scheduleNextDirectionChange();
         }
 
-        // Movimiento
+        // Movement
         this.x += dirX * speed;
         this.y += dirY * speed;
-        // Setear esto despues en una clase que represente el primer mapa.
-        clampPlayer(5000, 5000);
+
+        clampMonster(5000, 5000);
     }
 
-    public void clampPlayer(double WORLD_WIDTH, double WORLD_HEIGHT){
+    // This method limits monster movement to the map
+    public void clampMonster(double WORLD_WIDTH, double WORLD_HEIGHT){
         this.x = Math.max(
                 0,
                 Math.min(WORLD_WIDTH, this.x)
@@ -84,28 +90,26 @@ public class Monster {
                 System.currentTimeMillis() + directionChangeIntervalMs;
     }
 
-    // -----------------------
-    // Combate
-    // -----------------------
-    public void receiveDamage(int damage) {
+    // Combat
+    public void receiveDamage(int damage, String playerId) {
         if (!alive) return;
 
         hp -= damage;
+        this.lastDamagedByPlayerId = playerId;
+
         if (hp <= 0) {
             hp = 0;
             alive = false;
         }
     }
 
-    // -----------------------
-    // Getters (sin setters peligrosos)
-    // -----------------------
     public String getId() { return id; }
     public MonsterType getType() { return type; }
     public int getMapId() { return mapId; }
     public double getX() { return x; }
     public double getY() { return y; }
     public int getHp() { return hp; }
+    public int getMaxHp() {return maxHp;}
     public boolean isAlive() { return alive; }
     public Reward getReward() { return reward; }
 }

@@ -7,6 +7,7 @@ public class MonsterSnapshot {
     private double x;
     private double y;
     private int hp;
+    private int maxHp;
     private boolean alive;
 
     public MonsterSnapshot(String id,
@@ -14,12 +15,14 @@ public class MonsterSnapshot {
                            double x,
                            double y,
                            int hp,
+                           int maxHp,
                            boolean alive) {
         this.id = id;
         this.type = type;
         this.x = x;
         this.y = y;
         this.hp = hp;
+        this.maxHp = maxHp;
         this.alive = alive;
     }
 
@@ -41,6 +44,10 @@ public class MonsterSnapshot {
 
     public int getHp() {
         return hp;
+    }
+
+    public int getMaxHp(){
+        return maxHp;
     }
 
     public boolean isAlive() {

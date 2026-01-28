@@ -18,6 +18,7 @@ export class WebsocketService {
 
   private WORLD_TOPIC = '/topic/sync/world';
   private MOVEMENT_DESTINATION = '/app/move';
+  private ATTACK_DESTINATION = '/app/attack';
 
   constructor(private authService: AuthService) {}
 
@@ -57,6 +58,15 @@ export class WebsocketService {
         body: JSON.stringify(position),
       });
     }
+  }
+
+  public sendAttack(monsterId: string): void {
+    if (!this.stompClient?.connected) return;
+
+    this.stompClient.publish({
+      destination: this.ATTACK_DESTINATION,
+      body: JSON.stringify({ monsterId }),
+    });
   }
 
   public disconnect(): void {

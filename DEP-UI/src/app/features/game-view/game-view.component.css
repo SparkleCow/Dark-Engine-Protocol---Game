@@ -20,7 +20,7 @@
    WORLD
 ---------------------------- */
 #world {
-  position: absolute;
+  position: relative;
   width: 5000px;
   height: 5000px;
 
@@ -61,14 +61,18 @@
 ---------------------------- */
 .monster {
   position: absolute;
-  width: 26px;
-  height: 26px;
+  width: 40px;
+  height: 40px;
   margin-left: -13px;
   margin-top: -13px;
 
   border-radius: 50%;
   background: crimson;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
 }
 
 .monster-name {
@@ -88,4 +92,12 @@
 .loading {
   color: white;
   padding: 40px;
+}
+
+.hud {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  pointer-events: auto;
 }

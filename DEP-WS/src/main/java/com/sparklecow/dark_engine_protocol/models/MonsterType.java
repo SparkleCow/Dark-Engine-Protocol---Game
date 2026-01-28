@@ -6,21 +6,21 @@ public enum MonsterType {
             50,
             1.2,
             3000,
-            new Reward(10, 5)
+            new Reward(10, 5, 2, 2,1)
     ),
 
     DRONE(
             80,
             2.5,
             2000,
-            new Reward(20, 10)
+            new Reward(20, 10, 3,3,2)
     ),
 
     SENTINEL(
             200,
             0.8,
             5000,
-            new Reward(100, 50)
+            new Reward(100, 50, 6,6, 5)
     );
 
     private final int baseHp;
