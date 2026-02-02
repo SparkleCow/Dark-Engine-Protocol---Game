@@ -16,6 +16,9 @@ spring:
   cache:
     type: redis
 
+  kafka:
+    bootstrap-servers: localhost:9092
+
 application:
   security:
     jwt:

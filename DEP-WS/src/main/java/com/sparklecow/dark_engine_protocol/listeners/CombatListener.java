@@ -15,14 +15,7 @@ public class CombatListener {
     @EventListener
     public void onMonsterDeath(MonsterDeathEvent event) {
 
-        statsService.addExperience(
-                event.killerPlayerId(),
-                event.experience(),
-                event.honor(),
-                event.companyPoints(),
-                event.credits(),
-                event.astato()
-        );
+        statsService.addExperience(event);
 
 //        missionService.notifyKill(
 //                event.killerPlayerId(),

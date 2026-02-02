@@ -1,5 +1,6 @@
 package com.sparklecow.dark_engine_protocol.services;
 
+import com.sparklecow.dark_engine_protocol.models.MonsterDeathEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,22 +10,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StatsService {
 
-    public void addExperience(
-            String playerId,
-            int experience,
-            int honor,
-            int companyPoints,
-            int credits,
-            int astato
-    ) {
+    private final KafkaProducerService kafkaProducerService;
+
+    public void addExperience(MonsterDeathEvent event) {
+        kafkaProducerService.sendStats(event);
+
         log.info(
                 "STATS UPDATE | playerId={} | xp={} | honor={} | companyPoints={} | credits={} | astato={}",
-                playerId,
-                experience,
-                honor,
-                companyPoints,
-                credits,
-                astato
+                event.killerPlayerId(),
+                event.experience(),
+                event.honor(),
+                event.companyPoints(),
+                event.credits(),
+                event.astato()
         );
     }
 }
