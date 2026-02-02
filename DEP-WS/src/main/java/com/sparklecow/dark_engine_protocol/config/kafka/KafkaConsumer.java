@@ -23,7 +23,7 @@ public class KafkaConsumer {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
         // Consumer group ID (consumers with the same group share the load)
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "stats");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "stats-updated");
         // Deserializers convert byte data from Kafka into Java objects
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

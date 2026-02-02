@@ -9,7 +9,7 @@ import { WorldSnapshot } from '../../models/world-snapshot';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PlayerService } from '../../core/services/player.service';
-import { PlayerResponseDto } from '../../models/player-response-dto';
+import { PlayerResponseDto, Stats } from '../../models/player-response-dto';
 
 @Component({
   selector: 'app-game-view',
@@ -45,7 +45,9 @@ export class GameViewComponent implements OnInit, OnDestroy {
   private keysPressed: Record<string, boolean> = {};
   private lastSendTime = 0;
   private animationFrameId!: number;
+
   private worldSubscription!: Subscription;
+  private statsSubscription!: Subscription;
 
   constructor(
     public wsService: WebsocketService,
@@ -62,6 +64,8 @@ export class GameViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.wsService.disconnect();
     this.worldSubscription?.unsubscribe();
+    this.statsSubscription?.unsubscribe();
+
     cancelAnimationFrame(this.animationFrameId);
 
     window.removeEventListener('keydown', this.handleKeyDown);
@@ -84,10 +88,16 @@ export class GameViewComponent implements OnInit, OnDestroy {
           username: this.PLAYER_USERNAME,
         };
 
-        this.wsService.connect(this.PLAYER_ID);
+        this.wsService.connect(this.PLAYER_USERNAME);
         this.worldSubscription = this.wsService.world$.subscribe((w) =>
           this.handleWorldSnapshot(w),
         );
+
+        console.log(this.PLAYER_USERNAME);
+        this.statsSubscription = this.wsService.stats$.subscribe((stats) => {
+          this.playerInformation.stats = stats;
+          console.log(this.playerInformation.stats);
+        });
 
         this.animationFrameId = requestAnimationFrame(this.gameLoop);
         this.isLoading = false;

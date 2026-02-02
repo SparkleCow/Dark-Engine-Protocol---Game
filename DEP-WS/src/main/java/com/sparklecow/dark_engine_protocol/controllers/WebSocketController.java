@@ -59,8 +59,6 @@ public class WebSocketController {
         }
 
         combatService.attackMonster(usernameAttr.toString(), msg.getMonsterId());
-
-
     }
 
     // TODO: Add @MessageMapping handlers for shooting, pickups, combat, etc.

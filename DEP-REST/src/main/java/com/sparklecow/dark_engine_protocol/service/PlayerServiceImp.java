@@ -27,6 +27,8 @@ public class PlayerServiceImp implements PlayerService {
                 .experience(0L)
                 .honor(0L)
                 .companyPoints(0L)
+                .credits(0L)
+                .astato(0L)
                 .build();
 
         Inventory inventory = Inventory.builder().build();

@@ -18,11 +18,15 @@ public class Stats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Progress
     private Integer level;
-
     private Long experience;
 
+    // Reputation / honor
     private Long honor;
 
+    // Economy
     private Long companyPoints;
+    private Long credits;
+    private Long astato;
 }

@@ -1,42 +1,26 @@
 package com.sparklecow.dark_engine_protocol.config.kafka;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
 
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String BOOTSTRAP_SERVER;
-
+    /*This method creates a new topic into kafka.*/
     @Bean
-    public ConsumerFactory<String, String> consumerFactory(){
-        Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
-        // Consumer group ID (consumers with the same group share the load)
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "stats");
-        // Deserializers convert byte data from Kafka into Java objects
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        return new DefaultKafkaConsumerFactory<String, String>(config);
+    public NewTopic statsTopic() {
+
+        return TopicBuilder
+                // Name of the Kafka topic to be created
+                .name("stats-updated")
+                // Number of partitions for the topic.
+                // More partitions = more parallelism for consumers
+                .partitions(3)
+                // Number of replicas for each partition.
+                .replicas(1)
+                // Builds the NewTopic instance
+                .build();
     }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-
-        factory.setConsumerFactory(consumerFactory());
-        return factory;
-    }
-
 }

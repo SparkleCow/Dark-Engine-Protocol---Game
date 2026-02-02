@@ -5,6 +5,7 @@ import SockJS from 'sockjs-client';
 import { AuthService } from './auth.service';
 import { WorldSnapshot } from '../../models/world-snapshot';
 import { Position } from '../../models/position';
+import { PlayerStats } from '../../models/player-stats-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -16,13 +17,17 @@ export class WebsocketService {
   private worldSubject = new Subject<WorldSnapshot>();
   public world$ = this.worldSubject.asObservable();
 
+  private statsSubject = new Subject<PlayerStats>();
+  public stats$ = this.statsSubject.asObservable();
+
   private WORLD_TOPIC = '/topic/sync/world';
+  private STATS_QUEUE_PREFIX = '/queue/stats/';
   private MOVEMENT_DESTINATION = '/app/move';
   private ATTACK_DESTINATION = '/app/attack';
 
   constructor(private authService: AuthService) {}
 
-  public connect(playerId: number): void {
+  public connect(username: string): void {
     const jwtToken = this.authService.getToken();
     if (!jwtToken) return;
 
@@ -42,6 +47,21 @@ export class WebsocketService {
           const snapshot: WorldSnapshot = JSON.parse(message.body);
           this.worldSubject.next(snapshot);
         });
+
+        console.log(
+          'Subscribed to topics:',
+          this.WORLD_TOPIC,
+          `${this.STATS_QUEUE_PREFIX}${username}`,
+        );
+
+        this.stompClient.subscribe(
+          `${this.STATS_QUEUE_PREFIX}${username}`,
+          (message) => {
+            console.log('Stats message received:', message.body);
+            const stats: PlayerStats = JSON.parse(message.body);
+            this.statsSubject.next(stats);
+          },
+        );
       },
 
       onWebSocketError: (err) => console.error(err),

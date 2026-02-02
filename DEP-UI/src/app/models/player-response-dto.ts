@@ -1,5 +1,5 @@
 export interface PlayerResponseDto {
-  id: number; 
+  id: number;
   username: string;
   email: string;
 
@@ -17,11 +17,13 @@ export interface LastPosition {
 }
 
 export interface Stats {
-  id: number; 
+  id?: number;
   level: number;
   experience: number;
   honor: number;
   companyPoints: number;
+  credits: number;
+  astato: number;
 }
 
 export interface Inventory {
